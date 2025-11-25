@@ -37,27 +37,27 @@ struct TrainControlLocationView: View {
                         Spacer()
 
                         Group {
-                            Button("􀅄") {
+                            Button("⊻") {
                                 setTrainLocationSheet.toggle()
                             }
                             .help("Set Location")
                             .buttonStyle(.borderless)
 
-                            Button("􀅂") {
+                            Button("⇥") {
                                 moveTrainLocationSheet.toggle()
                             }
                             .help("Move Train")
                             .buttonStyle(.borderless)
                             .disabled(!doc.power)
 
-                            Button("􀄨") {
+                            Button("⨉") {
                                 removeTrainSheet.toggle()
                             }
                             .help("Remove Train")
                             .buttonStyle(.borderless)
                         }.disabled(!doc.connected)
                     } else {
-                        Button("Set Location 􀅄") {
+                        Button("Set Location ⊻") {
                             setTrainLocationSheet.toggle()
                         }
                         .disabled(!doc.connected)

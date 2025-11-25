@@ -20,25 +20,25 @@ struct TrainControlActionsView: View {
 
     var body: some View {
         HStack {
-            Button("􀊋 Start All") {
+            Button("Start All") {
                 document.startAll()
             }.disabled(!document.trainsThatCanBeStarted || !document.power)
 
             Spacer().fixedSpace()
 
-            Button("􀛷 Stop All") {
+            Button("Stop All") {
                 document.stopAll()
             }.disabled(!document.trainsThatCanBeStopped || !document.power)
 
             Spacer().fixedSpace()
 
-            Button("􀊆 Finish All") {
+            Button("Finish All") {
                 document.finishAll()
             }.disabled(!document.trainsThatCanBeFinished || !document.power)
 
             Spacer()
 
-            Button(filterRunningTrains ? "􀌉" : "􀌈") {
+            Button(filterRunningTrains ? "✔︎" : "✘") {
                 filterRunningTrains.toggle()
             }.buttonStyle(.borderless)
         }

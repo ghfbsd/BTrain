@@ -80,9 +80,9 @@ struct PowerStateIndicationView: View {
     var text: String {
         var t = ""
         if document.power {
-            t += "􀋦 Power ON"
+            t += "✔︎ Power ON"
         } else {
-            t += "􀋪 Power OFF"
+            t += "✘ Power OFF"
         }
         if simulator.started {
             t += " [Simulator]"
@@ -107,7 +107,7 @@ struct DeveloperCommandsView: View {
 
     var body: some View {
         if document.showDebugModeControls {
-            Menu("􀤊") {
+            Menu("✄") {
                 Button("Repair Layout") {
                     LayoutDiagnostic(layout: document.layout).repair()
                 }
@@ -126,7 +126,7 @@ struct SwitchboardEditButton: View {
 
     var body: some View {
         if !document.connected {
-            Button("􀈊") {
+            Button("✍︎") {
                 state.editing.toggle()
                 if state.editing {
                     document.switchboard.startEditing()
@@ -142,7 +142,7 @@ struct SwitchboardSettingsButton: View {
     @ObservedObject var document: LayoutDocument
 
     var body: some View {
-        Button("􀋭") {
+        Button("⦻") {
             document.showSwitchboardViewSettings.toggle()
         }.help("Show/hide Switchboard View Settings")
     }
