@@ -32,7 +32,7 @@ struct RouteScriptEditingView: View {
                 TextField("", text: script.name)
             }
         }) { script in
-            RouteScriptEditorView(doc: doc, layout: layout, script: script)
+            RouteScriptEditorView(doc: doc, layout: layout, script: script).frame(minWidth: (NSApp.keyWindow?.contentView?.bounds.width ?? 500) * 0.70)
         }.onDisappear {
             layout.updateRoutesUsingRouteScripts()
         }
