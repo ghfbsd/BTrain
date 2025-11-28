@@ -51,7 +51,7 @@ struct RouteScriptCommandView: View {
     var body: some View {
         HStack {
             if command.action.draggable {
-                Text("●")
+                Text("≣")
             }
             if commandErrorIds.contains(command.id.uuidString) {
                 Text("○")
@@ -130,13 +130,13 @@ struct RouteScriptCommandView: View {
             }
 
             if command.action != .stop {
-                Button("+") {
+                Button("⊕") {
                     script.commands.insert(source: RouteScriptCommand(action: .move), after: command)
                 }.buttonStyle(.borderless)
             }
 
             if command.action.deletable {
-                Button("-") {
+                Button("⊖") {
                     script.commands.remove(source: command)
                 }.buttonStyle(.borderless)
             }

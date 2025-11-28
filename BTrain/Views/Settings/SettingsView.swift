@@ -17,6 +17,8 @@ struct SettingsView: View {
         case general, speed, routing, logging, advanced
     }
 
+    @AppStorage(SettingsKeys.CS3)
+        private var controllerType : Bool = true
     @AppStorage(SettingsKeys.autoConnectSimulator) private var autoConnectSimulator = false
     @AppStorage(SettingsKeys.autoEnableSimulator) private var autoEnableSimulator = false
     @AppStorage(SettingsKeys.fontSize) private var fontSize = 12.0
@@ -44,7 +46,13 @@ struct SettingsView: View {
     var body: some View {
         TabView {
             Form {
-                Toggle("Connect to Simulator At Startup", isOn: $autoConnectSimulator)
+                Picker(selection: $controllerType, label: Text("Controller:")) {
+                    Text("CS2/3").tag(true/*ControllerType.CS3*/)
+                    Text("MS2").tag(false/*ControllerType.MS2*/)
+                }.pickerStyle(RadioGroupPickerStyle())
+
+                Toggle("Connect to Simulator at Startup", isOn:
+                            $autoConnectSimulator)
 
                 HStack {
                     Spacer().fixedSpace()

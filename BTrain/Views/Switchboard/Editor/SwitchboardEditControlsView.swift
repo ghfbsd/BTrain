@@ -25,11 +25,11 @@ struct SwitchboardEditControlsView: View {
     var body: some View {
         HStack {
             Group {
-                Button("􀅼 Block") {
+                Button("≣ Block") {
                     newBlockSheet.toggle()
                 }
 
-                Button("􀅼 Turnout") {
+                Button("≣ Turnout") {
                     newTurnoutSheet.toggle()
                 }
 
@@ -42,7 +42,7 @@ struct SwitchboardEditControlsView: View {
 
             Spacer().fixedSpace()
 
-            Button("􀈑") {
+            Button("☒") {
                 switchboard.remove(state.selectedShape!)
             }.disabled(state.selectedShape == nil)
 

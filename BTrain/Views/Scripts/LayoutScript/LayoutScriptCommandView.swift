@@ -22,10 +22,10 @@ struct LayoutScriptCommandView: View {
 
     var body: some View {
         HStack {
-            Text("􀌃")
+            Text("≣")
 
             if invalidCommandIds.contains(command.id) {
-                Text("􀇿")
+                Text("☒")
                     .foregroundColor(.red)
             }
 
@@ -43,11 +43,11 @@ struct LayoutScriptCommandView: View {
             .labelsHidden()
             .fixedSize()
 
-            Button("􀁌") {
+            Button("⊕") {
                 script.commands.insert(source: LayoutScriptCommand(action: .run), after: command)
             }.buttonStyle(.borderless)
 
-            Button("􀁎") {
+            Button("⊖") {
                 script.commands.remove(source: command)
             }.buttonStyle(.borderless)
         }

@@ -37,7 +37,7 @@ struct LayoutScriptEditorView: View {
                         ForEach(command.children, id: \.self) { command in
                             HStack {
                                 Spacer().fixedSpace()
-                                Text("􀄵")
+                                Text("↪︎")
                                 LayoutScriptLineView(doc: doc, layout: layout, script: script, command: command, invalidCommandIds: $invalidCommandIds)
                             }
                         }
@@ -54,11 +54,11 @@ struct LayoutScriptEditorView: View {
                         Spacer()
 
                     case .failure:
-                        Text("􀇾")
+                        Text("✔︎")
                         Spacer()
 
                     case .success:
-                        Text("􀁢")
+                        Text("✘")
 
                         Spacer()
                     }
