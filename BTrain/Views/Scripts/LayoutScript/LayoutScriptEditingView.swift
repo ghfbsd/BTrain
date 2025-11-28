@@ -32,7 +32,7 @@ struct LayoutScriptEditingView: View {
                 TextField("", text: script.name)
             }
         }) { script in
-            LayoutScriptEditorView(doc: doc, layout: layout, script: script)
+            LayoutScriptEditorView(doc: doc, layout: layout, script: script).frame(minWidth: (NSApp.keyWindow?.contentView?.bounds.width ?? 500) * 0.70)
         }
     }
 }
