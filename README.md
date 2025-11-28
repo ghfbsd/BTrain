@@ -48,6 +48,13 @@ BTrain defines several routes:
 
 ![Routes](Assets/routes.png)
 
+**Requirements**
+
+Either
+
+- Marklin Central Station 3 (CS3)
+- Marklin Mobile Station 2 (MS2) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway)
+
 **Features**
 
 - Easy to use layout editor where blocks and turnouts can be added in one click and linked together by dragging and dropping links between them.
@@ -59,12 +66,12 @@ BTrain defines several routes:
 - Visual feedback of the exact location of the train, including the locomotive and its wagons, within blocks.
 - Unexpected feedback detection.
 - Automatic discovery of locomotives.
-- Support for Marklin Central Station 3.
 - Offline layout simulator to simulate the movement of the trains, including feedbacks and turnouts, without having to connect to a real Central Station 3.
 
 **Known Issues**
 
 - The document does not get marked as "Edited" for some changes.
+- MS2 support does not provide full access to all locomotive functions.
 
 **Glossary**
 
@@ -77,8 +84,8 @@ BTrain defines several routes:
 **Build from Source**
 
 To compile BTrain from source, the following versions are required:
-- macOS 13.x
-- Xcode 14.x
+- macOS 13.x (or higher)
+- Xcode 14.x (or higher)
 
 Clone this repository and open the `BTrain.xcodeproj` in Xcode. Hit Command-R and enjoy!
 
