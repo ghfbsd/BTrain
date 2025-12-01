@@ -42,25 +42,25 @@ struct LocomotiveSpeedTableView: View {
                 }
             }
             HStack {
-                Button("􁂥") {
+                Button("…") {
                     trainSpeed.updateSpeedStepsTable()
                     trainSpeed.interpolateSpeedTable()
                 }
                 .help("Interpolate Missing Speed Values")
 
-                Button("􀈂") {
+                Button("Export") {
                     exportTable()
                 }
                 .help("Export Table")
 
-                Button("􀈄") {
+                Button("Import") {
                     importTable()
                 }
                 .help("Import Table")
 
                 Spacer()
 
-                Button("􀈑") {
+                Button("✄") {
                     selection.forEach { index in
                         trainSpeed.speedTable[Int(index)].speed = nil
                     }
