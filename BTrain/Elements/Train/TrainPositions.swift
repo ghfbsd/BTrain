@@ -45,13 +45,13 @@ struct TrainPositions: Equatable, Codable, CustomStringConvertible {
 
     func description(_ layout: Layout?) -> String {
         if let head = head, let tail = tail {
-            return "􀼯\(tail.description(layout))-\(head.description(layout))􀼮"
+            return ">\(tail.description(layout))-\(head.description(layout))<"
         } else if let head = head {
-            return "􀼯?-\(head.description(layout))􀼮"
+            return ">?-\(head.description(layout))<"
         } else if let tail = tail {
-            return "􀼯\(tail.description(layout))-?􀼮"
+            return ">\(tail.description(layout))-?<"
         } else {
-            return "􀼯?-?􀼮"
+            return ">?-?<"
         }
     }
 
