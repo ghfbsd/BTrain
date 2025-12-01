@@ -40,9 +40,9 @@ struct RouteValidationView: View {
                 }
                 if let routeError = routeError {
                     if routeError.valid {
-                        Text("􀁢")
+                        Text("✔︎")
                     } else {
-                        Text("􀇾")
+                        Text("✘")
                     }
                 }
             }
@@ -50,6 +50,8 @@ struct RouteValidationView: View {
                 Text("\(resolvedRouteDescription)")
             }
         }
+        .frame(minWidth:(NSApp.keyWindow?.contentView?.bounds.width ?? 500) * 0.9)
+
     }
 
     func validateRoute() {
