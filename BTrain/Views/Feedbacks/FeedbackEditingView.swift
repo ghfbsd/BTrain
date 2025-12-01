@@ -46,7 +46,7 @@ struct FeedbackEditingView: View {
             }
         }, elementContainer: $layout.feedbacks, more: {
             if doc.connected {
-                Button("􀥄") {
+                Button("☈") {
                     showAddNewFeedback.toggle()
                 }
             }
