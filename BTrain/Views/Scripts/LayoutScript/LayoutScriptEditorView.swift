@@ -54,11 +54,11 @@ struct LayoutScriptEditorView: View {
                         Spacer()
 
                     case .failure:
-                        Text("✔︎")
+                        Text("✘")
                         Spacer()
 
                     case .success:
-                        Text("✘")
+                        Text("✔︎")
 
                         Spacer()
                     }
