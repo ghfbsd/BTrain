@@ -158,7 +158,7 @@ extension Layout {
             if train?.routeStepIndex == index {
                 // Indicate the block in the route where the train
                 // is currently located
-                text += "􀼮"
+                text += "●"
             }
 
             index += 1
