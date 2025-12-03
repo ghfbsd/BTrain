@@ -59,13 +59,13 @@ struct RouteListView: View {
 
                     Spacer().fixedSpace()
 
-                    Button("􀉁") {
+                    Button("Copy") {
                         layout.duplicate(routeId: selection!)
                     }.disabled(selection == nil)
 
                     Spacer().fixedSpace()
 
-                    Button("􀄬") {
+                    Button("Sort") {
                         layout.sortRoutes()
                     }
                 }.padding()
