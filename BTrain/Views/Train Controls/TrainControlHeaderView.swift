@@ -19,11 +19,11 @@ struct TrainControlHeaderView: View {
     var body: some View {
         HStack {
             if pinnedTrainIds.contains(train.id) {
-                Button("􀎧") {
+                Button("⚑") {
                     pinnedTrainIds.remove(train.id)
                 }
             } else {
-                Button("􀎦") {
+                Button("⚐") {
                     pinnedTrainIds.insert(train.id)
                 }
             }
