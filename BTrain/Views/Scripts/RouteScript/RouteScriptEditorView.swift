@@ -51,14 +51,14 @@ struct RouteScriptEditorView: View {
                         Spacer()
 
                     case .failure:
-                        Text("􀇾")
+                        Text("✘")
                         if let errorSummary = validator.errorSummary {
                             Text(errorSummary)
                         }
                         Spacer()
 
                     case .success:
-                        Text("􀁢")
+                        Text("✔︎")
 
                         Spacer()
 
