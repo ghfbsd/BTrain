@@ -32,7 +32,7 @@ struct RouteStepBlockView: View {
                         Text(direction.description).tag(direction as Direction?)
                     }
                 }
-                .fixedSize()
+                //.fixedSize()
             }
 
             if let block = layout.blocks[stepBlock.blockId] {
