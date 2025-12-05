@@ -46,13 +46,13 @@ final class ScheduledMessageQueue {
     }
 
     func enable() {
-        BTLogger.debug("􀐫 [\(name)] enable")
+        BTLogger.debug("⚙︎ [\(name)] enable")
         executing = false
         enabled = true
     }
 
     func disable() {
-        BTLogger.debug("􀐫 [\(name)] disable")
+        BTLogger.debug("⚙︎ [\(name)] disable")
         enabled = false
         scheduledQueue.removeAll()
     }
@@ -106,6 +106,6 @@ final class ScheduledMessageQueue {
     }
 
     private func printStats() {
-        BTLogger.debug("􀐫 [\(name)] \(scheduledQueue.count) scheduled")
+        BTLogger.debug("⚙︎ [\(name)] \(scheduledQueue.count) scheduled")
     }
 }
