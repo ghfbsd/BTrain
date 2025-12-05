@@ -13,6 +13,7 @@
 import Foundation
 
 struct SettingsKeys {
+    static let CS3 = "CS3"
     static let autoConnectSimulator = "autoConnectSimulator"
     static let autoEnableSimulator = "autoEnableSimulator"
     static let fontSize = "fontSize"

@@ -48,7 +48,7 @@ struct SettingsView: View {
             Form {
                 Picker(selection: $controllerType, label: Text("Controller:")) {
                     Text("CS2/3").tag(true/*ControllerType.CS3*/)
-                    Text("MS2").tag(false/*ControllerType.MS2*/)
+                    Text("Gleisbox").tag(false/*ControllerType.MS2*/)
                 }.pickerStyle(RadioGroupPickerStyle())
 
                 Toggle("Connect to Simulator at Startup", isOn:

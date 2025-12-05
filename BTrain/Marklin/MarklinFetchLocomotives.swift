@@ -11,12 +11,16 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import SwiftUI
 
 typealias QueryLocomotivesResult = Result<[CommandLocomotive], Error>
 
 /// Fetches the locomotive definitions and icons from the Central Station by using an HTTP request.
 /// See ``MarklinCS3`` for more information.
 struct MarklinFetchLocomotives {
+    @AppStorage(SettingsKeys.CS3)
+        var CS3 : Bool = true
+    
     /// Fetch the locomotive commands from the specified Central Station URL
     /// - Parameters:
     ///   - server: the URL of the Central Station (can also be a local file for testing)
@@ -24,6 +28,7 @@ struct MarklinFetchLocomotives {
     func fetchLocomotives(server: URL, completion: @escaping (QueryLocomotivesResult) -> Void) {
         Task {
             let cs3 = MarklinCS3()
+            if !CS3 { completion(.success([CommandLocomotive]())) } // for now, no list if MS2
             do {
                 let loks = try await cs3.fetchLoks(server: server)
                 let cmdLoks = await convert(loks, url: server)

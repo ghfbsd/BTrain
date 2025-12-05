@@ -11,9 +11,13 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import SwiftUI
 
 /// Implementation of the CommandInterface for the Marklin Central Station 3
 final class MarklinInterface: CommandInterface, ObservableObject {
+    @AppStorage(SettingsKeys.CS3)
+        var CS3 : Bool = true
+    
     var callbacks = CommandInterfaceCallbacks()
 
     var client: Client?
@@ -38,6 +42,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     private var completionBlocks = [MarklinCANMessage: [CompletionBlock]]()
 
     private let resources = MarklinInterfaceResources()
+    
+    private var first = true
 
     /// Returns the URL of the CS3 server
     private var serverURL: URL? {
@@ -92,6 +98,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     }
 
     func execute(command: Command, completion: CompletionBlock? = nil) {
+        //if !CS3 { BTLogger.debug("CS3 not available, loco list and loco functions not provided") }
         if case .locomotives = command, let serverURL = serverURL {
             locomotivesFetcher.fetchLocomotives(server: serverURL) { [weak self] result in
                 self?.callbacks.locomotivesQueries.all.forEach { $0(result) }
@@ -260,6 +267,11 @@ final class MarklinInterface: CommandInterface, ObservableObject {
             completionBlocks[message.raw] = (completionBlocks[message.raw] ?? []) + [completion]
         }
 
+        if first && !CS3 {
+            client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
+            first = false
+        }
+        
         client.send(data: message.data, priority: priority == .high) {
             // no-op as we don't care about when the message is done being sent down the wire
         }

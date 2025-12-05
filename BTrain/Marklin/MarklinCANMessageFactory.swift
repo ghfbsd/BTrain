@@ -101,6 +101,62 @@ struct MarklinCANMessageFactory {
         )
         return message
     }
+    
+    public static func boot() -> MarklinCANMessage {
+        let message = MarklinCANMessage(prio: 0,        // The magic Gleisbox start command,
+                                        command: 0x1b,  // courtesy of https://github.com/GBert/railroad/can2udp
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 5,
+                                        byte0: 0,
+                                        byte1: 0,
+                                        byte2: 0,
+                                        byte3: 0,
+                                        byte4: 0x11,
+                                        byte5: 0,
+                                        byte6: 0,
+                                        byte7: 0  // not used
+        )
+        return message
+    }
+    
+    
+    public static func ping() -> MarklinCANMessage {
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x18, // PING,
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 0,
+                                        byte0: 0, // not used
+                                        byte1: 0, // not used
+                                        byte2: 0, // not used
+                                        byte3: 0, // not used
+                                        byte4: 0, // not used
+                                        byte5: 0, // not used
+                                        byte6: 0, // not used
+                                        byte7: 0  // not used
+        )
+        return message
+    }
+    
+    
+    public static func sysg() -> MarklinCANMessage {
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x00, // SYSTEM MFX REG
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 7,
+                                        byte0: 0,
+                                        byte1: 0,
+                                        byte2: 0,
+                                        byte3: 0,
+                                        byte4: 0x09,
+                                        byte5: 0x00,
+                                        byte6: 0x03,
+                                        byte7: 0  // not used
+        )
+        return message
+    }
 
     enum Direction {
         case nochange

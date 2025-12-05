@@ -11,6 +11,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import SwiftUI
 
 /// Helper class to fetch configuration information from the Central Station using HTTP requests.
 struct MarklinCS3 {
@@ -26,6 +27,9 @@ struct MarklinCS3 {
 
     /// API to retrieve the function icons
     let API_FUNCTIONS_ICONS = "images/svgSprites/fcticons.json"
+    
+    @AppStorage(SettingsKeys.CS3)
+        var CS3 : Bool = true
 
     // MARK: - Locomotive
 
@@ -64,6 +68,10 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station IP address
     /// - Returns: the array of locomotives
     func fetchLoks(server: URL) async throws -> [Lok] {
+        if !CS3 {
+            BTLogger.debug("CS3 not available, loco list and loco functions not provided")
+            return [Lok]()
+        }
         let url = server.appending(path: API_LOKS)
         return try await fetch(url: url)
     }
@@ -125,6 +133,7 @@ struct MarklinCS3 {
     /// - Returns: the functions
     func fetchFunctions(server: URL) async throws -> Functions {
         let url: URL
+        if !CS3 { return Functions(gruppe:[FunctionGroups]()) }
         if server.isFileURL {
             // When used in unit test, the local file path must be slighlty different because
             // of a naming conflict on the file system.
@@ -141,9 +150,10 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station URL
     /// - Returns: the SVG sprites
     func fetchSvgSprites(server: URL) async throws -> SvgSprites {
-        try await fetch(url: server.appending(path: API_FUNCTIONS_ICONS))
+        if !CS3 { return SvgSprites() }
+        return try await fetch(url: server.appending(path: API_FUNCTIONS_ICONS))
     }
-
+    
     private func fetch<E: Decodable>(url: URL) async throws -> E {
         BTLogger.network.info("Fetching \(url)")
         let (data, _) = try await URLSession.shared.data(from: url)
