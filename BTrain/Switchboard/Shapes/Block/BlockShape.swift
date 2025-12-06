@@ -265,7 +265,7 @@ final class BlockShape: Shape, DraggableShape, ConnectableShape {
             }
 
             if train.timeUntilAutomaticRestart > 0 {
-                let timeRemainingLabel = BlockShape_TextLabel(ctx: ctx, text: "􀐫 \(Int(train.timeUntilAutomaticRestart)) s.", borderColor: shapeContext.borderLabelColor, shapeContext: shapeContext)
+                let timeRemainingLabel = BlockShape_TextLabel(ctx: ctx, text: "↻ \(Int(train.timeUntilAutomaticRestart)) s.", borderColor: shapeContext.borderLabelColor, shapeContext: shapeContext)
                 labels.append(timeRemainingLabel)
             }
         }
