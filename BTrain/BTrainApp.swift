@@ -34,7 +34,7 @@ struct BTrainApp: App {
             MenuCommands()
             CommandGroup(replacing: CommandGroupPlacement.help) {
                 Button("BTrain Repository") {
-                    openURL(URL(string: "https://github.com/jean-bovet/BTrain")!)
+                    openURL(URL(string: "https://github.com/ghfbsd/BTrain")!)
                 }
             }
         }
