@@ -1,7 +1,8 @@
 
 **Welcome**
 
-BTrain is my attempt at automating a model railway layout. It is open-source and free to use but still experimental: use it at your own risk!
+BTrain is my[^1] attempt at automating a model railway layout. It is open-source and free to use but still experimental: use it at your own risk!
+[^1]: Me, my and I in this document refer to Jean Bovet
 
 This is a slightly modified version of Jean Bovet's BTrain repository to allow
 BTrain to be used without an attached Marklin CS2 or CS3 controller.  For the
@@ -57,7 +58,7 @@ BTrain defines several routes:
 Either
 
 - Marklin Central Station 3 (CS3); or
-- Marklin Mobile Station 2 (MS2) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway)
+- Marklin 60116 Gleisbox (optionally with a Mobile Station 2 (MS2)) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway)
 
 **Features**
 
