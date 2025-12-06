@@ -6,7 +6,9 @@ BTrain is my[^1] attempt at automating a model railway layout. It is open-source
 
 This is a slightly modified version of Jean Bovet's BTrain repository to allow
 BTrain to be used without an attached Marklin CS2 or CS3 controller.  For the
-original version, see [here](https://github.com/jean-bovet/BTrain).
+original version, see [here](https://github.com/jean-bovet/BTrain).  To use
+BTrain without a CS2 / CS3 controller, tick on "Gleisbox" in the `Preferences`
+panel.
 
 ![Automatic Routing](Assets/switchboard.png)
 
