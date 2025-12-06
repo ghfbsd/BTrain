@@ -66,11 +66,11 @@ final class LocomotiveSpeedManager {
                     // when a speed command completion happens. This is fine because for each speed change,
                     // we need to call both the completion block and the change callback here.
                     loc.speed.actualSteps = steps
-                    BTLogger.speed.debug("\(loc.name, privacy: .public): 􀝆 actual speed is \(loc.speed.actualKph) kph (\(loc.speed.actualSteps))")
+                    BTLogger.speed.debug("\(loc.name, privacy: .public): ☄︎ actual speed is \(loc.speed.actualKph) kph (\(loc.speed.actualSteps))")
                 } else {
                     // Only a  direct command from the Digital Controller should change the requested speed.
                     loc.speed.requestedSteps = steps
-                    BTLogger.speed.debug("\(loc.name, privacy: .public): 􀝆 requested speed is \(loc.speed.actualKph) kph (\(loc.speed.actualSteps))")
+                    BTLogger.speed.debug("\(loc.name, privacy: .public): ☄︎ requested speed is \(loc.speed.actualKph) kph (\(loc.speed.actualSteps))")
                 }
                 speedChanged?()
             }
@@ -184,7 +184,7 @@ final class LocomotiveSpeedManager {
 
         let value = interface.speedValue(for: steps, decoder: loc.decoder)
         let speedKph = loc.speed.speedKph(for: steps)
-        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} 􀐫 speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public)")
+        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public)")
 
         assert(command.isProcessedByDigitalController == false)
         command.isProcessedByDigitalController = true
@@ -198,7 +198,7 @@ final class LocomotiveSpeedManager {
         loc.speed.actualSteps = steps
 
         let speedKph = loc.speed.speedKph(for: steps)
-        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} 􀆅 speed command for \(speedKph) kph (\(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public)")
+        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (\(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public)")
 
         if command.status == .finished || command.status == .cancelled {
             let finished = command.status == .finished
