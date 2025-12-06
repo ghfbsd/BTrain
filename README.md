@@ -3,6 +3,10 @@
 
 BTrain is my attempt at automating a model railway layout. It is open-source and free to use but still experimental: use it at your own risk!
 
+This is a slightly modified version of Jean Bovet's BTrain repository to allow
+BTrain to be used without an attached Marklin CS2 or CS3 controller.  For the
+original version, see [here](https://github.com/jean-bovet/BTrain).
+
 ![Automatic Routing](Assets/switchboard.png)
 
 This [YouTube video](https://youtu.be/XyPod8v5tRU) shows BTrain in action with my still-in-progress layout.
@@ -52,7 +56,7 @@ BTrain defines several routes:
 
 Either
 
-- Marklin Central Station 3 (CS3)
+- Marklin Central Station 3 (CS3); or
 - Marklin Mobile Station 2 (MS2) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway)
 
 **Features**
@@ -65,21 +69,23 @@ Either
 - Take into account the length of the train, block, turnout, and feedback position to accurately understand the location of each train to reserve the necessary block to avoid a collision.
 - Visual feedback of the exact location of the train, including the locomotive and its wagons, within blocks.
 - Unexpected feedback detection.
-- Automatic discovery of locomotives.
+- Automatic discovery of locomotives (with a CS3 only).
 - Offline layout simulator to simulate the movement of the trains, including feedbacks and turnouts, without having to connect to a real Central Station 3.
 
 **Known Issues**
 
 - The document does not get marked as "Edited" for some changes.
-- MS2 support does not provide full access to all locomotive functions.
+- Gleisbox support does not provide full access to all locomotive functions.
 
 **Glossary**
 
-- Block: a logical grouping of rails where one and only one train can be present at a time.
+- Block: a logical grouping of rails where one and only one train can be present at a time; has a physical length to reckon a train position in it
+- Station: a special type of block that optionally lets a train wait in it a while before proceeding
 - Turnout: an element that guides a train from one rail to another
 - Feedback: an element that indicates when a train is present or not
-- Transition: any stretch of track between a block and turnout (and any combination of)
+- Transition: any stretch of track between a block and turnout (and any combination of); has no physical length by definition
 - Route: a series of blocks that a train follows
+- Train: a locomotive and collection of wagons (each of which has a length)
 
 **Build from Source**
 
