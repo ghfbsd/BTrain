@@ -32,7 +32,7 @@ struct LocomotiveEditingView: View {
                 $0.name < $1.name
             }
         }, elementContainer: $layout.locomotives, more: {
-            Button("􀈄") {
+            Button("∀") {
                 discoverLocomotiveConfirmation.toggle()
             }
             .disabled(!document.connected)
