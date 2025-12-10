@@ -29,7 +29,27 @@ struct MarklinCS3 {
     let API_FUNCTIONS_ICONS = "images/svgSprites/fcticons.json"
     
     @AppStorage(SettingsKeys.CS3)
-        var CS3 : Bool = true
+    var CS3 : GizmoType = .default
+    
+    public enum GizmoType: String {
+        
+        case CS3  = "CS3"
+        case MS2  = "MS2"
+        case box = "Gbox"
+        //case CS3(String = "CS3")
+        //case MS2(String = "MS2")
+        //case Gbox(String = "Gbox")
+        static var `default`: GizmoType { return .box }
+        
+        public init(rawValue: RawValue) {
+            switch rawValue {
+            case GizmoType.CS3.rawValue: self = .CS3
+            case GizmoType.MS2.rawValue: self = .MS2
+            case GizmoType.box.rawValue: self = .box
+            default: self = .default
+            }
+        }
+    }
 
     // MARK: - Locomotive
 
@@ -68,10 +88,6 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station IP address
     /// - Returns: the array of locomotives
     func fetchLoks(server: URL) async throws -> [Lok] {
-        if !CS3 {
-            BTLogger.debug("CS3 not available, loco list and loco functions not provided")
-            return [Lok]()
-        }
         let url = server.appending(path: API_LOKS)
         return try await fetch(url: url)
     }
@@ -133,7 +149,9 @@ struct MarklinCS3 {
     /// - Returns: the functions
     func fetchFunctions(server: URL) async throws -> Functions {
         let url: URL
-        if !CS3 { return Functions(gruppe:[FunctionGroups]()) }
+        if CS3 == .box {
+            return functionIconGroups()
+        }
         if server.isFileURL {
             // When used in unit test, the local file path must be slighlty different because
             // of a naming conflict on the file system.
@@ -150,7 +168,9 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station URL
     /// - Returns: the SVG sprites
     func fetchSvgSprites(server: URL) async throws -> SvgSprites {
-        if !CS3 { return SvgSprites() }
+        if CS3 == .box {
+            return svgIcons()
+        }
         return try await fetch(url: server.appending(path: API_FUNCTIONS_ICONS))
     }
     
@@ -160,5 +180,15 @@ struct MarklinCS3 {
         BTLogger.network.info("Got back \(data.count) bytes")
         let functions = try JSONDecoder().decode(E.self, from: data)
         return functions
+    }
+    
+    func functionIconGroups() -> Functions { // Built-ins for no CS3
+        let file = Bundle.main.url(forResource: "functionIconGroups", withExtension: nil, subdirectory: "CS3Server/app/api/loks:/")!
+        return try! JSONDecoder().decode(Functions.self, from: String(contentsOf: file).data(using: .utf8)!)
+    }
+
+    private func svgIcons() -> SvgSprites { // Built-ins for no CS3
+        let file = Bundle.main.url(forResource: "fcticons", withExtension: "json", subdirectory: "CS3Server/images/svgSprites/")!
+        return try! JSONDecoder().decode(SvgSprites.self, from: String(contentsOf: file).data(using: .utf8)!)
     }
 }

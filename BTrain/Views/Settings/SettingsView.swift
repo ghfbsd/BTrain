@@ -18,7 +18,7 @@ struct SettingsView: View {
     }
 
     @AppStorage(SettingsKeys.CS3)
-        private var controllerType : Bool = true
+        private var CS3: MarklinCS3.GizmoType = .CS3
     @AppStorage(SettingsKeys.autoConnectSimulator) private var autoConnectSimulator = false
     @AppStorage(SettingsKeys.autoEnableSimulator) private var autoEnableSimulator = false
     @AppStorage(SettingsKeys.fontSize) private var fontSize = 12.0
@@ -46,9 +46,10 @@ struct SettingsView: View {
     var body: some View {
         TabView {
             Form {
-                Picker(selection: $controllerType, label: Text("Controller:")) {
-                    Text("CS2/3").tag(true/*ControllerType.CS3*/)
-                    Text("Gleisbox").tag(false/*ControllerType.MS2*/)
+                Picker(selection: $CS3, label: Text("Controller:")) {
+                    Text("CS2/3").tag(MarklinCS3.GizmoType.CS3)
+                    Text("MS2 + Gleisbox").tag(MarklinCS3.GizmoType.MS2)
+                    Text("Gleisbox only").tag(MarklinCS3.GizmoType.box)
                 }.pickerStyle(RadioGroupPickerStyle())
 
                 Toggle("Connect to Simulator at Startup", isOn:

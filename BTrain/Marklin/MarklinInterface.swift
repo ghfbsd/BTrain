@@ -16,7 +16,7 @@ import SwiftUI
 /// Implementation of the CommandInterface for the Marklin Central Station 3
 final class MarklinInterface: CommandInterface, ObservableObject {
     @AppStorage(SettingsKeys.CS3)
-        var CS3 : Bool = true
+    var CS3 : MarklinCS3.GizmoType = .CS3
     
     var callbacks = CommandInterfaceCallbacks()
 
@@ -98,7 +98,6 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     }
 
     func execute(command: Command, completion: CompletionBlock? = nil) {
-        //if !CS3 { BTLogger.debug("CS3 not available, loco list and loco functions not provided") }
         if case .locomotives = command, let serverURL = serverURL {
             locomotivesFetcher.fetchLocomotives(server: serverURL) { [weak self] result in
                 self?.callbacks.locomotivesQueries.all.forEach { $0(result) }
@@ -267,7 +266,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
             completionBlocks[message.raw] = (completionBlocks[message.raw] ?? []) + [completion]
         }
 
-        if first && !CS3 {
+        if first && CS3 == .box {
             client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
             first = false
         }
