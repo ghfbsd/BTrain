@@ -1,5 +1,5 @@
 orig/
-*/.DS_Store
+.DS_Store
 *.xcuserstate
 xcuserdata/
 .idea/
