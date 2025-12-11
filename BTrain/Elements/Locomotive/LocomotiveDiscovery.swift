@@ -35,11 +35,31 @@ final class LocomotiveDiscovery {
 
         callbackUUID = interface.callbacks.register(forLocomotivesQuery: { [weak self] result in
             DispatchQueue.main.async {
+                guard let loks = self?.layout.locomotives else {
+                    BTLogger.error("No loks in layout?!")
+                    return
+                }
+                BTLogger.debug("Callback for \(result); layout locomotives: \(loks.elements.count)")
                 self?.unregisterCallback()
                 switch result {
                 case let .failure(error):
                     onError?(error)
                 case let .success(locomotives):
+                    let funcset = MarklinCS3().functionIconGroups().gruppe.first(where: {$0.name == "Häufige"})!.icon.filter { $0.type != nil }
+                    for newlok in loks.elements {
+                        if locomotives.count == 0 && newlok.functions.definitions.count == 0 {
+                            BTLogger.debug("No CS3 detected, define basic functions for \(newlok.name)")
+                            MarklinInterfaceResources().fetchResources(server: URL(filePath: "")!, {})
+                            var functions = [CommandLocomotiveFunction](), n: UInt8 = 0
+                            for funk in funcset { // need to fake up some attributes for the locomotive
+                                functions.append(
+                                    CommandLocomotiveFunction(nr: n, state: 0, type: UInt32(funk.type!, radix: 10)!)
+                                )
+                                n += 1
+                            }
+                            newlok.functions.definitions = functions
+                        }
+                    }
                     self?.process(locomotives: locomotives, merge: merge)
                     completion?()
                 }
@@ -59,10 +79,13 @@ final class LocomotiveDiscovery {
         var newLocs = [Locomotive]()
         for cmdLoc in locomotives {
             if let locUID = cmdLoc.uid, let loc = layout.locomotives[Identifier<Locomotive>(uuid: String(locUID))], merge {
+                BTLogger.debug("Found a loco with same UID \(cmdLoc)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else if let locAddress = cmdLoc.address, let loc = layout.locomotives.elements.find(address: locAddress, decoder: cmdLoc.decoderType), merge {
+                BTLogger.debug("Found a loco with same address \(cmdLoc)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else {
+                BTLogger.debug("Found a new loco \(cmdLoc)")
                 let loc: Locomotive
                 if let locUID = cmdLoc.uid {
                     loc = Locomotive(uuid: String(locUID))

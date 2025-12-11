@@ -15,8 +15,6 @@ import SwiftUI
 
 typealias QueryLocomotivesResult = Result<[CommandLocomotive], Error>
 
-extension String: Error {}
-
 /// Fetches the locomotive definitions and icons from the Central Station by using an HTTP request.
 /// See ``MarklinCS3`` for more information.
 struct MarklinFetchLocomotives {
@@ -30,19 +28,13 @@ struct MarklinFetchLocomotives {
     func fetchLocomotives(server: URL, completion: @escaping (QueryLocomotivesResult) -> Void) {
         Task {
             let cs3 = MarklinCS3()
-            if CS3 != .CS3 {                       // for now, no list if MS2
-                BTLogger.debug("CS3 not available, loco list and loco functions not provided")
-                //completion(.success([CommandLocomotive]()))
-                completion(.failure("No CS3"))
-            } else {
-                do {
-                    let loks = try await cs3.fetchLoks(server: server)
-                    let cmdLoks = await convert(loks, url: server)
-                    completion(.success(cmdLoks))
-                } catch {
-                    BTLogger.error("Error fetching the locomotives: \(error)")
-                    completion(.failure(error))
-                }
+            do {
+                let loks = try await cs3.fetchLoks(server: server)
+                let cmdLoks = await convert(loks, url: server)
+                completion(.success(cmdLoks))
+            } catch {
+                BTLogger.error("Error fetching the locomotives: \(error)")
+                completion(.failure(error))
             }
         }
     }

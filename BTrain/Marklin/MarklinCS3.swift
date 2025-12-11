@@ -85,6 +85,9 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station IP address
     /// - Returns: the array of locomotives
     func fetchLoks(server: URL) async throws -> [Lok] {
+        if CS3 != .CS3 {
+            return []
+        }
         let url = server.appending(path: API_LOKS)
         return try await fetch(url: url)
     }
@@ -184,7 +187,7 @@ struct MarklinCS3 {
         return try! JSONDecoder().decode(Functions.self, from: String(contentsOf: file).data(using: .utf8)!)
     }
 
-    private func svgIcons() -> SvgSprites { // Built-ins for no CS3
+    func svgIcons() -> SvgSprites { // Built-ins for no CS3
         let file = Bundle.main.url(forResource: "fcticons", withExtension: "json", subdirectory: "CS3Server/images/svgSprites/")!
         return try! JSONDecoder().decode(SvgSprites.self, from: String(contentsOf: file).data(using: .utf8)!)
     }
