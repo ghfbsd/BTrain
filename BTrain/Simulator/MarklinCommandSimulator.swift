@@ -189,7 +189,7 @@ final class MarklinCommandSimulator: Simulator, ObservableObject {
     }
 
     func start(_ port: UInt16 = 8080) {
-        try? cs3Server.start(port)
+        try? cs3Server.start(port)        // why need to start CS3 to start simulator?
 
         server = Server(port: localPort)
         server!.didAcceptConnection = { [weak self] connection in
@@ -200,7 +200,7 @@ final class MarklinCommandSimulator: Simulator, ObservableObject {
     }
 
     func stop(_ completion: @escaping CompletionBlock) {
-        cs3Server.stop()
+        cs3Server.stop()                   // this probably is unnecessary too
 
         let onCompletionBlock = { [weak self] in
             self?.started = false

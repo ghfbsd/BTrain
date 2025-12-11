@@ -267,7 +267,9 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         }
 
         if first && CS3 == .box {
+            //let txt: [UInt8] = Array("lokdb".utf8)  // Try to elicit a CONFIG DATA response from MS2
             client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
+            //client.send(data: MarklinCANMessageFactory.configData(bytes: txt).data, priority: false, onCompletion: {})
             first = false
         }
         
