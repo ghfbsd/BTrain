@@ -35,10 +35,7 @@ struct MarklinCS3 {
         
         case CS3  = "CS3"
         case MS2  = "MS2"
-        case box = "Gbox"
-        //case CS3(String = "CS3")
-        //case MS2(String = "MS2")
-        //case Gbox(String = "Gbox")
+        case box  = "box"
         static var `default`: GizmoType { return .box }
         
         public init(rawValue: RawValue) {
