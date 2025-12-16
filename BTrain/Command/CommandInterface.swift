@@ -22,10 +22,11 @@ protocol CommandInterface: AnyObject, MetricsProvider {
     /// - Parameters:
     ///   - server: the Digital Controller address
     ///   - port: the Digital Controller port
+    ///   - layout: the layout
     ///   - onReady: a callback invoked when the connection has been established
     ///   - onError: a callback invoked when the connection cannot be established
     ///   - onStop: a callback invoked when the connection is closed
-    func connect(server: String, port: UInt16, onReady: @escaping CompletionBlock, onError: @escaping (Error) -> Void, onStop: @escaping CompletionBlock)
+    func connect(server: String, port: UInt16, layout: Layout, onReady: @escaping CompletionBlock, onError: @escaping (Error) -> Void, onStop: @escaping CompletionBlock)
 
     /// Disconnects from the Digital Controller
     /// - Parameter completion: a callback invoked when the connection is effectively disconnected

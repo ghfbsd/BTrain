@@ -19,6 +19,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     var CS3 : MarklinCS3.GizmoType = .CS3
     
     var callbacks = CommandInterfaceCallbacks()
+    
+    var layout: Layout?
 
     var client: Client?
 
@@ -62,7 +64,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         return URL(string: "http://\(address)\(port)")
     }
 
-    func connect(server: String, port: UInt16, onReady: @escaping () -> Void, onError: @escaping (Error) -> Void, onStop: @escaping () -> Void) {
+    func connect(server: String, port: UInt16, layout: Layout, onReady: @escaping () -> Void, onError: @escaping (Error) -> Void, onStop: @escaping () -> Void) {
+        self.layout = layout
         client = Client(address: server, port: port)
         if let client = client {
             client.start { [weak self] in
@@ -178,6 +181,12 @@ final class MarklinInterface: CommandInterface, ObservableObject {
             switch cmd {
             case .configDataStream(length: _, data: _, descriptor: _):
                 break
+            case .discovery(UID: _, index: _, code: _, descriptor: _):
+                assertionFailure("Should never send a discovery packet")
+            case .bind(UID: _, addr: _, descriptor: _):
+                break
+            case .verify(UID: _, addr: _, descriptor: _):
+                break
             }
             return
         }
@@ -203,6 +212,28 @@ final class MarklinInterface: CommandInterface, ObservableObject {
             switch cmd {
             case .configDataStream:
                 break // ignore ack for this command
+            case .discovery(let UID, let index, let code, _):
+                BTLogger.debug("got discovery ack \(UID.toHex()) index \(index)")
+                if index == 0x20 && code == 0x00 {
+                    let loks = layout?.locomotives
+                    if loks?.elements.count == 0 { return }
+                    let lok = loks!.elements[0]
+                    BTLogger.debug("starting registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
+                    send(message: MarklinCANMessageFactory.MFXbind(UID: UID, addr: UInt16(lok.address)), priority: .high)
+                }
+            case .bind(let UID, let addr, _):
+                if msg.dlc != 6 {
+                    BTLogger.error("MFX loco registration failed on bind")
+                    break
+                }
+                BTLogger.debug("got MFX BIND ack for \(UID.toHex()) addr \(addr)")
+                send(message: MarklinCANMessageFactory.MFXverify(UID: UID, addr: addr), priority: .high)
+            case .verify(let UID, let addr, _):
+                if msg.dlc == 6 { BTLogger.error("MFX loco registration failed on verify") }
+                else if msg.dlc != 7 { BTLogger.error("MFX loco registration unexpected result (fail) on verify") }
+                else {
+                    BTLogger.debug("MFX loco \(UID.toHex()) registered as MFX \(addr)")
+                }
             }
             return
         }
@@ -255,7 +286,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         }
     }
 
-    private func send(message: MarklinCANMessage, priority: Command.Priority, completion: CompletionBlock?) {
+    private func send(message: MarklinCANMessage, priority: Command.Priority, completion: CompletionBlock? = nil) {
         guard let client = client else {
             BTLogger.error("Cannot send message to Digital Controller because the client is nil!")
             completion?()
@@ -267,9 +298,10 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         }
 
         if first && CS3 == .box {
-            //let txt: [UInt8] = Array("lokdb".utf8)  // Try to elicit a CONFIG DATA response from MS2
+            // Could send PING and check whether response includes an MS2 (or CS3!) to check for
+            // master controller conflicts; if MS2/CS3 registers a loco it can cause problems if we
+            // try to, too.
             client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
-            //client.send(data: MarklinCANMessageFactory.configData(bytes: txt).data, priority: false, onCompletion: {})
             first = false
         }
         

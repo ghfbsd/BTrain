@@ -64,7 +64,7 @@ extension LayoutDocument {
     }
 
     func connect(address: String, port: UInt16, completed: ((Error?) -> Void)? = nil) {
-        interface.connect(server: address, port: port) { [weak self] in
+        interface.connect(server: address, port: port, layout: layout) { [weak self] in
             DispatchQueue.main.async {
                 self?.connected = true
                 completed?(nil)

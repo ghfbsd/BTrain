@@ -15,6 +15,24 @@ import Foundation
 extension MarklinCommand {
     static func from(message: MarklinCANMessage) -> MarklinCommand? {
         let cmd = message.command
+        if cmd == 0x01 {
+            let UID: UInt32 = .init(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
+            let index = message.byte4, code = message.byte5
+            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) lok discovery, index \(index)")
+            return .discovery(UID: UID, index: index, code: code, descriptor: descriptor)
+        }
+        if cmd == 0x02 {
+            let UID: UInt32 = .init(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
+            let addr = UInt16(message.byte4 << 8) | UInt16(message.byte5)
+            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) mfx bind, addr \(addr)")
+            return .bind(UID: UID, addr: addr, descriptor: descriptor)
+        }
+        if cmd == 0x03 {
+            let UID: UInt32 = .init(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
+            let addr = UInt16(message.byte4 << 8) | UInt16(message.byte5)
+            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) mfx bind, addr \(addr)")
+            return .verify(UID: UID, addr: addr, descriptor: descriptor)
+        }
         if cmd == 0x21 {
             // Receiving the config data stream
             // The first packet will be like:
@@ -60,6 +78,11 @@ extension Command {
             let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
             return .emergencyStop(address: address, decoderType: nil, descriptor: CommandDescriptor(data: message.data, description: "0x00 System Emergency Stop - \(ack)"))
         }
+        //if cmd == 0x01 {
+        //    let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
+        //let index = message.byte4
+        //    return .discovery(address: address, index: index, descriptor: CommandDescriptor(data: message.data, description: "0x01 Lok Discovery for \(address.toHex()) - \(ack)"))
+        //}
         if cmd == 0x04 {
             let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
             let value = UInt16(message.byte4) << 8 | UInt16(message.byte5) << 0
@@ -169,6 +192,10 @@ extension MarklinCANMessage {
 
         case .locomotives(priority: let priority, descriptor: _):
             return (MarklinCANMessageFactory.locomotives(), priority)
+        
+        //case .discovery(address: let address, index: let index, descriptor: _):
+        //    assertionFailure("Unexpected command: LOK DISCOVERY should never be sent, only received")
+        //    return nil
 
         case .unknown(command: _, priority: _, descriptor: let descriptor):
             assertionFailure("Unknown command \(String(describing: descriptor?.description))")

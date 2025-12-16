@@ -59,6 +59,12 @@ struct MarklinCANMessagePrinter {
             switch mc {
             case .configDataStream(length: _, data: _, descriptor: let descriptor):
                 return descriptor?.description
+            case .discovery(UID: _, index: _, code: _, descriptor: let descriptor):
+                return descriptor?.description
+            case .bind(UID: _, addr: _, descriptor: let descriptor):
+                return descriptor?.description
+            case .verify(UID: _, addr: _, descriptor: let descriptor):
+                return descriptor?.description
 
             case .none:
                 if SettingsKeys.bool(forKey: SettingsKeys.logUnknownMessages) {

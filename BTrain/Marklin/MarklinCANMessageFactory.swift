@@ -157,6 +157,42 @@ struct MarklinCANMessageFactory {
         )
         return message
     }
+    
+    public static func MFXbind(UID: UInt32, addr: UInt16) -> MarklinCANMessage {
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x02, // MFX BIND
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 6,
+                                        byte0: UInt8((UID >> 24) & 0xFF),
+                                        byte1: UInt8((UID >> 16) & 0xFF),
+                                        byte2: UInt8((UID >>  8) & 0xFF),
+                                        byte3: UInt8((UID >>  0) & 0xFF),
+                                        byte4: UInt8((addr >> 8) & 0xFF),
+                                        byte5: UInt8((addr >> 0) & 0xFF),
+                                        byte6: 0, // not used
+                                        byte7: 0  // not used
+        )
+        return message
+    }
+    
+    public static func MFXverify(UID: UInt32, addr: UInt16) -> MarklinCANMessage {
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x03, // MFX VERIFY
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 6,
+                                        byte0: UInt8((UID >> 24) & 0xFF),
+                                        byte1: UInt8((UID >> 16) & 0xFF),
+                                        byte2: UInt8((UID >>  8) & 0xFF),
+                                        byte3: UInt8((UID >>  0) & 0xFF),
+                                        byte4: UInt8((addr >> 8) & 0xFF),
+                                        byte5: UInt8((addr >> 0) & 0xFF),
+                                        byte6: 0, // not used
+                                        byte7: 0  // not used
+        )
+        return message
+    }
 
     enum Direction {
         case nochange
