@@ -79,13 +79,10 @@ final class LocomotiveDiscovery {
         var newLocs = [Locomotive]()
         for cmdLoc in locomotives {
             if let locUID = cmdLoc.uid, let loc = layout.locomotives[Identifier<Locomotive>(uuid: String(locUID))], merge {
-                BTLogger.debug("Found a loco with same UID \(cmdLoc)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else if let locAddress = cmdLoc.address, let loc = layout.locomotives.elements.find(address: locAddress, decoder: cmdLoc.decoderType), merge {
-                BTLogger.debug("Found a loco with same address \(cmdLoc)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else {
-                BTLogger.debug("Found a new loco \(cmdLoc)")
                 let loc: Locomotive
                 if let locUID = cmdLoc.uid {
                     loc = Locomotive(uuid: String(locUID))
