@@ -78,11 +78,6 @@ extension Command {
             let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
             return .emergencyStop(address: address, decoderType: nil, descriptor: CommandDescriptor(data: message.data, description: "0x00 System Emergency Stop - \(ack)"))
         }
-        //if cmd == 0x01 {
-        //    let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
-        //let index = message.byte4
-        //    return .discovery(address: address, index: index, descriptor: CommandDescriptor(data: message.data, description: "0x01 Lok Discovery for \(address.toHex()) - \(ack)"))
-        //}
         if cmd == 0x04 {
             let address = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
             let value = UInt16(message.byte4) << 8 | UInt16(message.byte5) << 0
@@ -192,10 +187,6 @@ extension MarklinCANMessage {
 
         case .locomotives(priority: let priority, descriptor: _):
             return (MarklinCANMessageFactory.locomotives(), priority)
-        
-        //case .discovery(address: let address, index: let index, descriptor: _):
-        //    assertionFailure("Unexpected command: LOK DISCOVERY should never be sent, only received")
-        //    return nil
 
         case .unknown(command: _, priority: _, descriptor: let descriptor):
             assertionFailure("Unknown command \(String(describing: descriptor?.description))")
