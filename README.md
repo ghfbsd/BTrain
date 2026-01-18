@@ -10,6 +10,8 @@ original version, see [here](https://github.com/jean-bovet/BTrain).  To use
 BTrain without a CS2 / CS3 controller, tick on "Gleisbox" in the `Preferences`
 panel.
 
+For a pre-built, downloadable app, see [here](BTrain.dmg).
+
 ![Automatic Routing](Assets/switchboard.png)
 
 This [YouTube video](https://youtu.be/XyPod8v5tRU) shows BTrain in action with my still-in-progress layout.
