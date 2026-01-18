@@ -1,4 +1,5 @@
 orig/
+build/
 .DS_Store
 *.xcuserstate
 xcuserdata/
