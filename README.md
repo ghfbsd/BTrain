@@ -92,6 +92,12 @@ Either
 - Route: a series of blocks that a train follows
 - Train: a locomotive and collection of wagons (each of which has a length)
 
+**Download pre-built app**
+
+If you want a pre-built app that *should* be ready to run on your Mac (but
+there are no guarantees - sorry), download the .dmg file
+[located here](BTrain.dmg).
+
 **Build from Source**
 
 To compile BTrain from source, the following versions are required:
