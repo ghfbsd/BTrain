@@ -211,6 +211,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
             // Handle any Marklin-specific command first
             switch cmd {
             case .configDataStream:
+                BTLogger.error("Should never see an ACK for a Config Data Stream (ignored)")
                 break // ignore ack for this command
             case .discovery(let UID, let index, let code, _):
                 BTLogger.debug("got discovery ack \(UID.toHex()) index \(index)")
