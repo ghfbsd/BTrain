@@ -24,6 +24,10 @@ final class LayoutOnConnectTasks: ObservableObject {
     @Published var connectionCompletionLabel: String? = nil
 
     var cancel = false
+    var namestream: AsyncStream<String>?
+    var namecont: AsyncStream<String>.Continuation?
+    var lokstream: AsyncStream<CommandLocomotive?>?
+    var lokcont: AsyncStream<CommandLocomotive?>.Continuation?
 
     init(layout: Layout, layoutController: LayoutController, interface: CommandInterface, locFuncCatalog: LocomotiveFunctionsCatalog, locomotiveDiscovery: LocomotiveDiscovery) {
         self.layout = layout
@@ -58,6 +62,114 @@ final class LayoutOnConnectTasks: ObservableObject {
                     }
                 }
             }
+        }
+        
+        if [.MS2,.box].contains( MarklinInterface().CS3 ) {
+            // If not a CS2/CS3, set up a task to monitor Config Data Stream to catch
+            // locomotive definitions. This procedure is called repetitively, so we only
+            // want to define the callback!
+            if interface.callbacks.configChanges.all.count == 0 {
+                interface.callbacks.register(forConfigDataStream: getConfigData)
+            }
+        }
+    }
+    
+    private func getConfigData(text: String){
+        // Callback to handle complete Config Data Stream to see if it is of any interest
+        var lines = text.split(whereSeparator: \.isNewline)
+        let title = lines[0].trimmingCharacters(in: .whitespacesAndNewlines)
+        lines.remove(at:0)
+
+        if title == "[lokliste]" {
+            // This gives us the names of all of the locomotives
+            var loks = [String]()
+            for line in lines {
+                let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
+                if item[0] == ".name" { loks.append(item[1]) }
+            }
+            BTLogger.debug("[lokliste] found: \(loks)")
+            // Start a task to get info about each loco here; it would be run whenever a
+            // [lokliste] stream is found.  This monitors manual changees to the loco list
+            // on the MS2 (it rebroadcasts them after each change), as well as catching
+            // the first .lokliste command issued on startup which defines/augments the
+            // loco list.
+            (namestream, namecont) = AsyncStream<String>.makeStream()
+            (lokstream, lokcont) = AsyncStream<CommandLocomotive?>.makeStream()
+            Task {
+                var newloks = [CommandLocomotive](), newnames = [String]()
+                for await lok in namestream! {
+                    // Issue command to get a lokomotive data stream for the loco
+                    // The result is a [lokomotive] data stream, processed below
+                    try await Task.sleep(nanoseconds: 2_000_000_000) // important: let CAN bus quiesce
+                    interface.execute(command: .lokinfo(name: lok), completion: {})
+                    interface.execute(command: .lokinfo_(name: lok), completion: {})
+                    interface.execute(command: .lokinfo__(name: lok), completion: {})
+                    BTLogger.debug("Requesting \(lok)")
+                    for await newlok in lokstream! {
+                        if newlok == nil {break}
+                        newloks.append(newlok!)
+                    }
+                    newnames.append(lok)
+                }
+                MainThreadQueue.sync {
+                    BTLogger.debug("Registering \(newnames)")
+                    discovery.process(locomotives: newloks, merge: true)
+                }
+            }
+            for lok in loks {
+                namecont!.yield(lok)
+            }
+            namecont!.finish()
+        }
+        
+        if title == "[lokomotive]" {
+            // This gives us all of the info about a particular locomotive
+            // First parse into keyword = value dictionary
+            var desc: [String : String] = [:]
+            let multi = [".fkt","..nr","..typ","..dauer","..wert"]
+            for line in lines {
+                let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
+                if multi.contains(item[0]) { continue } // skip for later processing
+                if item.count == 1 { desc[item[0]] = ""} else { desc[item[0]] = item[1] }
+            }
+            BTLogger.debug("Got [lokomotive] stream for \(desc[".name"] ?? "(unknown)")")
+            
+            // Accumulate function list
+            // It should be possible to add function icons here, too
+            var fns = [CommandLocomotiveFunction](), typ = 0, dauer = 0, wert = 0, nr = 0
+            for line in lines {
+                let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
+                if item[0] == ".fkt" {
+                    if typ+dauer+wert == 0 { continue } // only interested in functions
+                    fns.append(CommandLocomotiveFunction(nr: UInt8(nr), state: UInt8(wert), type: UInt32(typ)))
+                    typ = 0; dauer = 0; wert = 0; nr += 1
+                    continue
+                }
+                if item.count > 1 && multi.contains(item[0]) {
+                    if item[0] == "..typ" { typ = Int(item[1]) ?? 0 }
+                    if item[0] == "..dauer" { dauer = Int(item[1]) ?? 0 }
+                    if item[0] == "..wert" { wert = Int(item[1]) ?? 0 }
+                }
+            }
+            fns.append(CommandLocomotiveFunction(nr: UInt8(nr), state: UInt8(wert), type: UInt32(typ)))
+            
+            let decoder = desc[".typ"] ?? "unknown"
+            let lok = CommandLocomotive(
+                uid: desc[".mfxuid"]!.valueFromHex ?? 0xffffffff,
+                name: desc[".name"] ?? "(unknown)",
+                address: desc[".adresse"]!.valueFromHex ?? 0,
+                maxSpeed: UInt32(desc[".vmax"]!) ?? 0,
+                decoderType: decoder == "dcc" ? .DCC :
+                    decoder == "mfx" ? .MFX :
+                    decoder == "mm2_prg" ? .MM2 :
+                    decoder == "mm2_dil8" ? .MM2 :
+                    decoder == "sx1" ? .SX1 :
+                        .DCC,
+                icon: nil,
+                functions: fns
+            )
+            lokcont!.yield(lok)
+            lokcont!.yield(nil)
         }
     }
 

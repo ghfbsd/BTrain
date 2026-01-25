@@ -14,6 +14,8 @@
 import Foundation
 
 final class MockCommandInterface: CommandInterface {
+    func connect(server: String, port: UInt16, layout: BTrain.Layout, onReady: @escaping BTrain.CompletionBlock, onError: @escaping (any Error) -> Void, onStop: @escaping BTrain.CompletionBlock) {}
+    
     var callbacks = CommandInterfaceCallbacks()
 
     var speedValues = [UInt16]()
@@ -34,7 +36,7 @@ final class MockCommandInterface: CommandInterface {
         executePendingCommands()
     }
 
-    func connect(server _: String, port _: UInt16, onReady _: @escaping () -> Void, onError _: @escaping (Error) -> Void, onStop _: @escaping () -> Void) {}
+    //func connect(server _: String, port _: UInt16, onReady _: @escaping () -> Void, onError _: @escaping (Error) -> Void, onStop _: @escaping () -> Void) {}
 
     func disconnect(_: @escaping CompletionBlock) {}
 

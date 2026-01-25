@@ -14,8 +14,16 @@ import Foundation
 
 struct MarklinCANMessagePrinter {
     static func debugDescription(msg: MarklinCANMessage) -> String? {
+        var str=""
+        if msg.data[1] == 0x42 { // decode text for CONFIG DATA STREAM messages
+            let sp=Array("□.........↲↓↧⇤..................")
+            for c in msg.data[5..<(5+min(8,msg.data[4]))] {
+                str += (c < 0x20) ? String(sp[Int(c)]) : ((c > 0x79) ? "." : String(bytes: [c], encoding: .ascii)!)
+            }
+            str = " *" + str + "*"
+        }
         if let description = MarklinCANMessagePrinter.description(message: msg) {
-            return "\(description), data: \(msg.data as NSData)"
+            return "\(description)\(str), data: \(msg.data as NSData)"
         } else {
             return nil
         }
@@ -53,11 +61,23 @@ struct MarklinCANMessagePrinter {
 
         case .locomotives(priority: _, descriptor: let descriptor):
             return descriptor?.description
-
+        
+        case .lokliste(priority: _, descriptor: let descriptor):
+            return descriptor?.description
+            
+        case .lokinfo(name: _, priority: _, descriptor: let descriptor):
+            return descriptor?.description
+            
+        case .lokinfo_(name: _, priority: _, descriptor: let descriptor):
+            return descriptor?.description
+            
+        case .lokinfo__(name: _, priority: _, descriptor: let descriptor):
+            return descriptor?.description
+            
         case .unknown(command: _, priority: _, descriptor: let descriptor):
             let mc = MarklinCommand.from(message: message)
             switch mc {
-            case .configDataStream(length: _, data: _, descriptor: let descriptor):
+            case .configDataStream(hash: _, length: _, CRC: _, data: _, descriptor: let descriptor):
                 return descriptor?.description
             case .discovery(UID: _, index: _, code: _, descriptor: let descriptor):
                 return descriptor?.description

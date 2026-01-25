@@ -278,6 +278,15 @@ final class MarklinCommandSimulator: Simulator, ObservableObject {
 
         case .queryDirection(address: let address, decoderType: let decoderType, priority: _, descriptor: _):
             provideDirection(address: address.actualAddress(for: decoderType))
+            
+        case .lokinfo(name: _, priority: _, descriptor: _):
+            break
+        case .lokinfo_(name: _, priority: _, descriptor: _):
+            break
+        case .lokinfo__(name: _, priority: _, descriptor: _):
+            break
+        case .lokliste(priority: _, descriptor: _):
+            break
 
         case .unknown(command: _):
             break

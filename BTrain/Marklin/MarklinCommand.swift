@@ -15,7 +15,7 @@ import Foundation
 /// These are the commands specific to the Marklin CS2/3
 enum MarklinCommand {
     /// This command is received from the CS3 when requesting configuration data, like the list of locomotives.
-    case configDataStream(length: UInt32?, data: [UInt8], descriptor: CommandDescriptor? = nil)
+    case configDataStream(hash: UInt16, length: UInt32?, CRC: UInt16?, data: [UInt8], descriptor: CommandDescriptor? = nil)
     
     // MFX locomotive discovery cycle; only index = 20 gives UID for loco.  All the
     // other index values are intermediate steps in the UID discovery phase.

@@ -49,6 +49,16 @@ enum Command {
     // This command uses the completion block of the execute() method to notify when
     // the locomotives have all been fetched
     case locomotives(priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
+    
+    // Info about a particular locomotive from MS2 (also CS2/CS3)
+    case lokinfo(name: String, priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
+    // Info about a particular locomotive from MS2 (also CS2/CS3), part 2
+    case lokinfo_(name: String, priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
+    // Info about a particular locomotive from MS2 (also CS2/CS3), part 3
+    case lokinfo__(name: String, priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
+    
+    // Info about a particular locomotive from MS2 (also CS2/CS3)
+    case lokliste(priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
 
     // Unknown command. Use the descriptor to find out more about its description
     // and potential hex values for debugging.

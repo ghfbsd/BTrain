@@ -45,6 +45,7 @@ final class CommandInterfaceCallbacks {
     typealias FunctionChangeCallback = (_ address: UInt32, _ decoderType: DecoderType?, _ index: UInt8, _ value: UInt8) -> Void
     typealias TurnoutChangeCallback = (_ address: CommandTurnoutAddress, _ state: UInt8, _ power: UInt8, _ acknowledgment: Bool) -> Void
     typealias QueryLocomotiveCallback = (_ locomotives: QueryLocomotivesResult) -> Void
+    typealias ConfigDataStreamCallback = (_ text: String ) -> Void
 
     var stateChanges = CallbackRegistrar<StateChangeCallback>()
     var feedbackChanges = CallbackRegistrar<FeedbackChangeCallback>()
@@ -53,6 +54,7 @@ final class CommandInterfaceCallbacks {
     var functionChanges = CallbackRegistrar<FunctionChangeCallback>()
     var turnoutChanges = CallbackRegistrar<TurnoutChangeCallback>()
     var locomotivesQueries = CallbackRegistrar<QueryLocomotiveCallback>()
+    var configChanges = CallbackRegistrar<ConfigDataStreamCallback>()
 
     /// Register a callback that will be invoked for each feedback event
     /// - Parameter forFeedbackChange: the callback block
@@ -101,6 +103,14 @@ final class CommandInterfaceCallbacks {
     func register(forLocomotivesQuery callback: @escaping QueryLocomotiveCallback) -> UUID {
         locomotivesQueries.register(callback)
     }
+    
+    /// Register a callback that will be invoked for each config data stream received
+    /// - Parameter forConfigDataStream: the callback block
+    /// - Returns: the unique ID that can be used to unregister the callback
+    @discardableResult
+    func register(forConfigDataStream callback: @escaping ConfigDataStreamCallback) -> UUID {
+        configChanges.register(callback)
+    }
 
     /// Unregisters a specified callback
     /// - Parameter uuid: the unique ID of the callback to unregister
@@ -111,5 +121,6 @@ final class CommandInterfaceCallbacks {
         functionChanges.unregister(uuid)
         turnoutChanges.unregister(uuid)
         locomotivesQueries.unregister(uuid)
+        configChanges.unregister(uuid)
     }
 }

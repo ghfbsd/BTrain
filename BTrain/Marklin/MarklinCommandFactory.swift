@@ -40,11 +40,12 @@ extension MarklinCommand {
             // Then
             // 0x0042bf46 08 b6e865b108245b4e
             // 0x0042bf46 08 af59f558cdabf574
-            if message.dlc == 0x06 {
+            if message.dlc == 0x06 || message.dlc == 0x07 {
                 // First packet, read the length in bytes
                 let length: UInt32 = .init(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
-                let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) configuration data, length \(length)")
-                return .configDataStream(length: length, data: [], descriptor: descriptor)
+                let CRC: UInt16 = UInt16(message.byte4) << 8 | UInt16(message.byte5)
+                let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) configuration data, hash \(message.hash.toHex()) length \(length) CRC \(CRC.toHex())")
+                return .configDataStream(hash: message.hash, length: length, CRC: CRC, data: [], descriptor: descriptor)
             } else if message.dlc == 0x08 {
                 // Subsequent packets
                 var data = [UInt8]()
@@ -57,7 +58,7 @@ extension MarklinCommand {
                 data.append(message.byte6)
                 data.append(message.byte7)
                 let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) configuration data: \(Data(data) as NSData)")
-                return .configDataStream(length: nil, data: data, descriptor: descriptor)
+                return .configDataStream(hash: message.hash, length: nil, CRC: nil, data: data, descriptor: descriptor)
             }
         }
         return nil
@@ -187,6 +188,18 @@ extension MarklinCANMessage {
 
         case .locomotives(priority: let priority, descriptor: _):
             return (MarklinCANMessageFactory.locomotives(), priority)
+        
+        case .lokliste(priority: let priority, descriptor: _):
+            return (MarklinCANMessageFactory.lokliste(), priority)
+            
+        case .lokinfo(name: let name, priority: let priority, descriptor: _):
+            return (MarklinCANMessageFactory.lokinfo(name), priority)
+            
+        case .lokinfo_(name: let name, priority: let priority, descriptor: _):
+            return (MarklinCANMessageFactory.lokinfo_(name), priority)
+            
+        case .lokinfo__(name: let name, priority: let priority, descriptor: _):
+            return (MarklinCANMessageFactory.lokinfo__(name), priority)
 
         case .unknown(command: _, priority: _, descriptor: let descriptor):
             assertionFailure("Unknown command \(String(describing: descriptor?.description))")

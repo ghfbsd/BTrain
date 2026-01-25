@@ -308,6 +308,81 @@ struct MarklinCANMessageFactory {
                                         byte7: 0)
         return message
     }
+    
+    public static func lokliste() -> MarklinCANMessage { // MS2 variant of the CS2/CS3 "loks" query
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x20,
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 0x08,
+                                        byte0: UInt8(Character("l").asciiValue! & 0xFF),
+                                        byte1: UInt8(Character("o").asciiValue! & 0xFF),
+                                        byte2: UInt8(Character("k").asciiValue! & 0xFF),
+                                        byte3: UInt8(Character("l").asciiValue! & 0xFF),
+                                        byte4: UInt8(Character("i").asciiValue! & 0xFF),
+                                        byte5: UInt8(Character("s").asciiValue! & 0xFF),
+                                        byte6: UInt8(Character("t").asciiValue! & 0xFF),
+                                        byte7: UInt8(Character("e").asciiValue! & 0xFF))
+        return message
+    }
+    
+    
+    public static func lokinfo(_ name: String) -> MarklinCANMessage { // MS2 variant of the CS2/CS3 "loks" query
+        var data: [UInt8] = Array(name.utf8)
+        for _ in data.count...16 { data.append(0) }
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x20,
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 0x08,
+                                        byte0: UInt8(Character("l").asciiValue! & 0xFF),
+                                        byte1: UInt8(Character("o").asciiValue! & 0xFF),
+                                        byte2: UInt8(Character("k").asciiValue! & 0xFF),
+                                        byte3: UInt8(Character("i").asciiValue! & 0xFF),
+                                        byte4: UInt8(Character("n").asciiValue! & 0xFF),
+                                        byte5: UInt8(Character("f").asciiValue! & 0xFF),
+                                        byte6: UInt8(Character("o").asciiValue! & 0xFF),
+                                        byte7: 0)
+        return message
+    }
+    
+    public static func lokinfo_(_ name: String) -> MarklinCANMessage { // MS2 variant of the CS2/CS3 "loks" query
+        var data: [UInt8] = Array(name.utf8)
+        for _ in data.count...16 { data.append(0) }
+        let message =     MarklinCANMessage(prio: 0,
+                                        command: 0x20,
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 0x08,
+                                        byte0: data[0],
+                                        byte1: data[1],
+                                        byte2: data[2],
+                                        byte3: data[3],
+                                        byte4: data[4],
+                                        byte5: data[5],
+                                        byte6: data[6],
+                                        byte7: data[7])
+        return message
+    }
+    
+    public static func lokinfo__(_ name: String) -> MarklinCANMessage { // MS2 variant of the CS2/CS3 "loks" query
+        var data: [UInt8] = Array(name.utf8)
+        for _ in data.count...16 { data.append(0) }
+        let message = MarklinCANMessage(prio: 0,
+                                        command: 0x20,
+                                        resp: 0,
+                                        hash: hash,
+                                        dlc: 0x08,
+                                        byte0: data[8],
+                                        byte1: data[9],
+                                        byte2: data[10],
+                                        byte3: data[11],
+                                        byte4: data[12],
+                                        byte5: data[13],
+                                        byte6: data[14],
+                                        byte7: data[15])
+        return message
+    }
 
     public static func configData(length: UInt32) -> MarklinCANMessage {
         let message = MarklinCANMessage(prio: 0,

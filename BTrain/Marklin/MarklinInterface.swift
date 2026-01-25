@@ -25,6 +25,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     var client: Client?
 
     let locomotivesFetcher = MarklinFetchLocomotives()
+    
+    var CDStreams: [UInt16: ConfigDataStream] = [:]
 
     typealias CompletionBlock = () -> Void
     private var disconnectCompletionBlocks: CompletionBlock?
@@ -179,7 +181,29 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         if let cmd = MarklinCommand.from(message: msg) {
             // Handle any Marklin-specific command first
             switch cmd {
-            case .configDataStream(length: _, data: _, descriptor: _):
+            case .configDataStream(hash: let hash, length: let length, CRC: let CRC, data: let data, descriptor: _):
+                // Define and handle Config Data Streams from any device
+                if length != nil {  // indicates start of a new stream
+                    if CDStreams[hash] != nil {
+                        let item = CDStreams[hash]!
+                        BTLogger.error("Already have an unfinished stream for \(hash.toHex()) \(item.length())")
+                    }
+                    CDStreams[hash] = ConfigDataStream(length!, CRC!)
+                } else {            // continues data on some stream
+                    guard let item = CDStreams[hash] else {
+                        BTLogger.error("No Config Data Stream for defined for \(hash.toHex()), but packet received")
+                        return
+                    }
+                    item.extend(data)
+                    if item.ready() && !item.corrupt() {
+                        // Process the stream now
+                        CDStreams.removeValue(forKey: hash)  // Finished with it now
+                        callbacks.configChanges.all.forEach { $0(item.data) }
+                    } else if item.ready() && item.corrupt() {
+                        BTLogger.error("Corrupted Config Data Stream for \(hash.toHex()) \(item.length()), discarding")
+                        CDStreams.removeValue(forKey: hash)
+                    }
+                }
                 break
             case .discovery(UID: _, index: _, code: _, descriptor: _):
                 assertionFailure("Should never send a discovery packet")
@@ -374,4 +398,57 @@ extension String {
             return .MFX
         }
     }
+}
+
+class ConfigDataStream: CustomStringConvertible {
+   private var expectedLength: UInt32
+   private var expectedCRC: UInt16
+   private var actualLength: UInt32 = 0
+   private var actualCRC: UInt16 = 0xffff
+
+   var data: String = ""
+
+   var description: String {
+      return "length: \(expectedLength),\(actualLength); CRC \(expectedCRC.toHex()),\(actualCRC.toHex()); text:\n \(data)"
+   }
+
+   init(_ length: UInt32, _ CRC: UInt16) {
+      self.expectedLength = length
+      self.expectedCRC = CRC
+   }
+
+   private func CRC(_ byt: UInt8, _ old: UInt16) -> UInt16 {
+      var acc = old ^ (UInt16(byt) << 8)
+      for _ in 0...7 {
+         if (acc & 0x8000) != 0 {
+            acc = (acc << 1) ^ 0x1021
+         } else {
+            acc <<= 1
+         }
+      }
+      return acc
+   }
+
+   func extend(_ str: [UInt8]) -> Void {
+      self.data += String(bytes: str, encoding: .utf8)!
+      self.actualLength += UInt32(str.count)
+      for c in str {
+         self.actualCRC = CRC(c, self.actualCRC)
+      }
+   }
+
+   func ready() -> Bool {
+      return self.actualLength >= self.expectedLength
+   }
+
+   func corrupt() -> Bool {
+      return (
+         (self.expectedCRC != self.actualCRC) ||
+         (self.expectedLength != self.actualLength)
+      )
+   }
+    
+   func length() -> (UInt32,UInt32) {
+       return (self.actualLength, self.expectedLength)
+   }
 }

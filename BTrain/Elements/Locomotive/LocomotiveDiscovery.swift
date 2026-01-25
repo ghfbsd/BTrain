@@ -67,6 +67,10 @@ final class LocomotiveDiscovery {
         })
 
         interface.execute(command: .locomotives(), completion: nil)
+        
+        if [.MS2,.box].contains( MarklinInterface().CS3 ) {
+            interface.execute(command: .lokliste(), completion: nil)
+        }
     }
 
     private func unregisterCallback() {
@@ -75,14 +79,18 @@ final class LocomotiveDiscovery {
         }
     }
 
-    private func process(locomotives: [CommandLocomotive], merge: Bool) {
+    func process(locomotives: [CommandLocomotive], merge: Bool) {
         var newLocs = [Locomotive]()
         for cmdLoc in locomotives {
+            let cmdLocName = cmdLoc.name ?? "(name undefined)"
             if let locUID = cmdLoc.uid, let loc = layout.locomotives[Identifier<Locomotive>(uuid: String(locUID))], merge {
+            //  BTLogger.debug("Merging (same UUID) \(cmdLocName) = \(loc.name)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else if let locAddress = cmdLoc.address, let loc = layout.locomotives.elements.find(address: locAddress, decoder: cmdLoc.decoderType), merge {
+            //  BTLogger.debug("Merging (same address) \(cmdLocName) = \(loc.name)")
                 mergeLocomotive(cmdLoc, with: loc)
             } else {
+            //  BTLogger.debug("New definition: \(cmdLocName)")
                 let loc: Locomotive
                 if let locUID = cmdLoc.uid {
                     loc = Locomotive(uuid: String(locUID))
