@@ -19,10 +19,11 @@ jobs:
         with:
            xcode-version: latest-stable
 
-      - name: Build create-dmg
+      - name: Install node
         uses: actions/setup-node@v6
         with:
            node-version: 24
+      - name: Build create-dmg
         run: npm install --global create-dmg
 
       - name: Build app for macOS
