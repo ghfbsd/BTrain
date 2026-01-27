@@ -67,59 +67,16 @@ jobs:
               --no-version-in-filename \
               --overwrite \
               ./
-           echo $PWD 
-           ls *.dmg
-           ls ${GITHUB_WORKSPACE}/*.dmg
 
-      - name: Upload the artifacts
+      - name: Create the release
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-           AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
            RELEASE_ID="${{ github.ref_name }}"
            FILE="${GITHUB_WORKSPACE}/BTrain.dmg"
-           FILENAME=$( basename "${FILE}" )
-           UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
-           echo "Upload URL is ${UPLOAD_URL}"
 
            # Create release
            gh release create "${RELEASE_ID}" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${RELEASE_ID#v}" \
               ${FILE}
-
-           # Upload the artifact & capture HTTP response-code in output file.
-           tmp=$(mktemp)
-           response=$(curl \
-              -sSL \
-              -XPOST \
-              -H "${AUTH_HEADER}" \
-              --upload-file "${FILE}" \
-              --header "Content-Type:application/octet-stream" \
-              --write-out "%{http_code}" \
-              --output $tmp \
-              "${UPLOAD_URL}")
-
-           if [ "$?" -ne 0 ]; then
-              echo "**********************************"
-              echo " curl command did not return zero."
-              echo " Aborting"
-              echo "**********************************"
-              cat $tmp
-              rm $tmp
-              exit 1
-           fi
-
-           # If upload is not successful, we must abort
-           if [ $response -ge 400 ]; then
-              echo "***************************"
-              echo " upload was not successful."
-              echo " Aborting"
-              echo " HTTP status is $response"
-              echo "**********************************"
-              cat $tmp | jq
-              rm $tmp
-              exit 1
-           fi
-           cat $tmp | jq
-           rm $tmp
