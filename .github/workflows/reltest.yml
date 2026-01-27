@@ -68,6 +68,7 @@ jobs:
               --overwrite \
               ./
            ls *.dmg
+           ls ${GITHUB_WORKSPACE)/*.dmg
 
       - name: Upload the artifacts
         env:
@@ -75,7 +76,7 @@ jobs:
         run: |
            AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
            RELEASE_ID="${{ github.ref_name }}"
-           FILE="BTrain.dmg"
+           FILE="${GITHUB_WORKSPACE}/*.dmg"
            FILENAME=$( basename "${FILE}" )
            UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
            echo "Upload URL is ${UPLOAD_URL}"
