@@ -56,8 +56,6 @@ jobs:
                -exportArchive -archivePath ./build/BTrain.xcarchive \
                -exportOptionsPlist build/BTrain.xcarchive/Info.plist \
                -exportPath ./build/export
-                make -C src -f makefile
-                mkdir binary
 
       - name: Create dmg
         run: |
