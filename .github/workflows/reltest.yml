@@ -68,7 +68,7 @@ jobs:
               --overwrite \
               ./
            ls *.dmg
-           ls ${GITHUB_WORKSPACE)/*.dmg
+           ls ${GITHUB_WORKSPACE}/*.dmg
 
       - name: Upload the artifacts
         env:
