@@ -82,6 +82,11 @@ jobs:
            UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
            echo "Upload URL is ${UPLOAD_URL}"
 
+           # Create release
+           gh release create "${RELEASE_ID}" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${RELEASE_ID#v}"
+
            # Upload the artifact & capture HTTP response-code in output file.
            tmp=$(mktemp)
            response=$(curl \
@@ -111,7 +116,7 @@ jobs:
               echo " Aborting"
               echo " HTTP status is $response"
               echo "**********************************"
-              cat $tmp
+              cat $tmp | jq
               rm $tmp
               exit 1
            fi
