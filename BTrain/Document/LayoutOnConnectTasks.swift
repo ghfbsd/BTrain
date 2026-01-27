@@ -74,6 +74,12 @@ final class LayoutOnConnectTasks: ObservableObject {
         }
     }
     
+    private func lokCheck(_ name: String, _ mfxuid: UInt32) -> Bool {
+        let sameName = layout.locomotives.elements.first(where:{$0.name == name})
+        let sameUID = layout.locomotives.elements.first(where:{UInt32($0.uuid) == mfxuid})
+        return ( sameName != nil && sameUID != nil && sameName == sameUID ) ? true : false
+    }
+    
     private func getConfigData(text: String){
         // Callback to handle complete Config Data Stream to see if it is of any interest
         var lines = text.split(whereSeparator: \.isNewline)
@@ -82,12 +88,20 @@ final class LayoutOnConnectTasks: ObservableObject {
 
         if title == "[lokliste]" {
             // This gives us the names of all of the locomotives
-            var loks = [String]()
+            var loks = [String](), names = [String](), name = "", uid = UInt32(0)
             for line in lines {
                 let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
-                if item[0] == ".name" { loks.append(item[1]) }
+                if item[0] == ".llindex" {
+                    if name != "" { names.append(name) }
+                    if name == "" || lokCheck(name, uid) { name = ""; continue }
+                    loks.append(name); name = ""
+                }
+                if item[0] == ".name" { name = item[1] }
+                if item[0] == ".mfxuid" { uid = item[1].valueFromHex ?? 0}
             }
-            BTLogger.debug("[lokliste] found: \(loks)")
+            if name != "" { names.append(name); if lokCheck(name, uid) { loks.append(name) } }
+            BTLogger.debug("[lokliste] found: \(names)")
+            BTLogger.debug("[lokliste] querying: \(loks)")
             // Start a task to get info about each loco here; it would be run whenever a
             // [lokliste] stream is found.  This monitors manual changees to the loco list
             // on the MS2 (it rebroadcasts them after each change), as well as catching
