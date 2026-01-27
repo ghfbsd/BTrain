@@ -59,7 +59,9 @@ jobs:
 
       - name: Create dmg
         run: |
-           create-dmg ./build/export/BTrain.app --no-version-in-filename ./
+           create-dmg ./build/export/BTrain.app \
+              --no-version-in-filename \
+              --overwrite ./
 
       - name: Upload the artifacts
         uses: skx/github-action-publish-binaries@master
