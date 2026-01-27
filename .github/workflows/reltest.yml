@@ -67,6 +67,7 @@ jobs:
               --no-version-in-filename \
               --overwrite \
               ./
+           echo $PWD 
            ls *.dmg
            ls ${GITHUB_WORKSPACE}/*.dmg
 
@@ -76,7 +77,7 @@ jobs:
         run: |
            AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
            RELEASE_ID="${{ github.ref_name }}"
-           FILE="${GITHUB_WORKSPACE}/*.dmg"
+           FILE="${GITHUB_WORKSPACE}/BTrain.dmg"
            FILENAME=$( basename "${FILE}" )
            UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
            echo "Upload URL is ${UPLOAD_URL}"
