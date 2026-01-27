@@ -51,20 +51,21 @@ jobs:
 
       - name: Build app for macOS
         run: |
-           xcodebuild \
+           echo xcodebuild \
                -workspace BTrain.xcodeproj/project.xcworkspace \
                -scheme BTrain \
                -configuration Release \
                -archivePath ./build/BTrain.xcarchive archive
-           xcodebuild \
+           echo xcodebuild \
                -exportArchive -archivePath ./build/BTrain.xcarchive \
                -exportOptionsPlist build/BTrain.xcarchive/Info.plist \
                -exportPath ./build/export
 
       - name: Create dmg
         run: |
-           create-dmg ./build/export/BTrain.app \
+           echo create-dmg ./build/export/BTrain.app \
               --no-version-in-filename \
+              --overwrite \
               ./
            ls *.dmg
 
