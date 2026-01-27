@@ -80,3 +80,5 @@ jobs:
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${RELEASE_ID#v}" \
               ${FILE}
+           gh release delete-asset "${RELEASE_ID}" "${RELEASE_ID}".zip --yes
+           gh release delete-asset "${RELEASE_ID}" "${RELEASE_ID}".tar.gz --yes
