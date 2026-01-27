@@ -1,7 +1,8 @@
 name: Release macOS .dmg
 
 on:
-  release:
+  push:
+     tags: 'test*'
 
 jobs:
   generate:
