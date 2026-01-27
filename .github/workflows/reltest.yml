@@ -4,6 +4,10 @@ on:
   push:
      tags: 'test*'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   generate:
 
@@ -61,7 +65,8 @@ jobs:
         run: |
            create-dmg ./build/export/BTrain.app \
               --no-version-in-filename \
-              ./build/export/
+              ./
+           ls *.dmg
 
       - name: Upload the artifacts
         env:
@@ -69,7 +74,7 @@ jobs:
         run: |
            AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
            RELEASE_ID="${{ github.ref_name }}"
-           FILE="./build/export/*.dmg"
+           FILE="*.dmg"
            FILENAME=$( basename "${FILE}" )
            UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
            echo "Upload URL is ${UPLOAD_URL}"
