@@ -1,0 +1,51 @@
+name: Release macOS .dmg
+
+on:
+  release:
+
+jobs:
+  generate:
+
+    name: Create macOS release-artifacts
+    runs-on: macOS-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+           xcode-version: latest-stable
+
+      - name: Build create-dmg
+        uses: actions/setup-node@v4
+        with:
+           node-version: '20.x'
+        run: |
+           npm install --global create-dmg
+
+      - name: Build app for macOS
+        run: |
+           xcodebuild \
+               -workspace BTrain.xcodeproj/project.xcworkspace \
+               -scheme BTrain \
+               -configuration Release \
+               -archivePath ./build/BTrain.xcarchive archive
+           xcodebuild \
+               -exportArchive -archivePath ./build/BTrain.xcarchive \
+               -exportOptionsPlist build/BTrain.xcarchive/Info.plist \
+               -exportPath ./build/export
+                make -C src -f makefile
+                mkdir binary
+
+      - name: Create dmg
+        run: |
+           create-dmg ./build/export/BTrain.app --no-version-in-filename ./
+
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+           args: '*.dmg'
