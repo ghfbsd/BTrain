@@ -2051,7 +2051,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/Users/george/work/BTrain/scripts/include-version-info.sh\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nscripts/include-version-info.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
