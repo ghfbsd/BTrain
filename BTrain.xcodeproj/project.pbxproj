@@ -1928,6 +1928,7 @@
 				A73AFE7E2726594600E1ED21 /* Sources */,
 				A73AFE7F2726594600E1ED21 /* Frameworks */,
 				A73AFE802726594600E1ED21 /* Resources */,
+				5ECB7A272F2A183A00B08C2E /* Run Script (add version info) */,
 			);
 			buildRules = (
 			);
@@ -2031,6 +2032,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5ECB7A272F2A183A00B08C2E /* Run Script (add version info) */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (add version info)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/Users/george/work/BTrain/scripts/include-version-info.sh\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A73AFE7E2726594600E1ED21 /* Sources */ = {
