@@ -10,7 +10,7 @@ original version, see [here](https://github.com/jean-bovet/BTrain).  To use
 BTrain without a CS2 / CS3 controller, tick on "Gleisbox" in the `Preferences`
 panel.
 
-For a pre-built, downloadable app, [download the .dmg file here](BTrain.dmg).
+For a pre-built, downloadable app, see the release materials.
 
 ![Automatic Routing](Assets/switchboard.png)
 
@@ -95,8 +95,12 @@ Either
 **Download pre-built app**
 
 If you want a pre-built app that *should* be ready to run on your Mac (but
-there are no guarantees - sorry), download the .dmg file
-[located here](BTrain.dmg).
+there are no guarantees - sorry), download the .dmg file in the latest release
+materials.  Depending on how you manage security on your Mac, it may be
+reluctant to open the .dmg file because it doesn't come from the App store.  
+If so, go to the *Privacy & Security* category and allow it to be opened,
+either by a one-time click on the last offending action in the list or by
+changing the *Allow applications from* tab setting.
 
 **Build from Source**
 
