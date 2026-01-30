@@ -168,17 +168,22 @@ final class LayoutOnConnectTasks: ObservableObject {
             fns.append(CommandLocomotiveFunction(nr: UInt8(nr), state: UInt8(wert), type: UInt32(typ)))
             
             let decoder = desc[".typ"] ?? "unknown"
+            let vmax = SpeedStep(value: UInt16(desc[".vmax"]!) ?? 255)
+            let dtyp: DecoderType =
+                decoder == "dcc" ?      .DCC :
+                decoder == "mfx" ?      .MFX :
+                decoder == "mm2_prg" ?  .MM2 :
+                decoder == "mm2_dil8" ? .MM2 :
+                decoder == "sx1" ?      .SX1 :
+                                        .DCC
+            let speed = LocomotiveSpeed(steps: vmax, decoderType: dtyp)
+            let maxSpeed = speed.speedKph(for: vmax)
             let lok = CommandLocomotive(
                 uid: desc[".mfxuid"]!.valueFromHex ?? 0xffffffff,
                 name: desc[".name"] ?? "(unknown)",
                 address: desc[".adresse"]!.valueFromHex ?? 0,
-                maxSpeed: UInt32(desc[".vmax"]!) ?? 0,
-                decoderType: decoder == "dcc" ? .DCC :
-                    decoder == "mfx" ? .MFX :
-                    decoder == "mm2_prg" ? .MM2 :
-                    decoder == "mm2_dil8" ? .MM2 :
-                    decoder == "sx1" ? .SX1 :
-                        .DCC,
+                maxSpeed: UInt32(maxSpeed > 0 ? maxSpeed : speed.maxSpeed),
+                decoderType: dtyp,
                 icon: nil,
                 functions: fns
             )
