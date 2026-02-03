@@ -25,7 +25,7 @@ struct BlockDetailsView: View {
                             HStack {
                                 Text(category.description)
                                 BlockShapeView(layout: layout, category: category)
-                            }
+                            }.frame(alignment:.leading)
                         }
                     }.pickerStyle(.inline)
                 }
@@ -34,6 +34,7 @@ struct BlockDetailsView: View {
                     UndoProvider($block.waitingTime) { waitingTime in
                         TextField("Waiting Time:", value: waitingTime, format: .number)
                             .unitStyle("s.")
+                            .frame(maxWidth: 150)
                     }
                 }.disabled(block.category != .station)
 
@@ -41,6 +42,7 @@ struct BlockDetailsView: View {
                     TextField("Length:", value: length, format: .number)
                         .unitStyle("cm")
                         .unitMenu(length)
+                        .frame(maxWidth: 120)
                 }
             }
 

@@ -40,6 +40,7 @@ struct BlockEditingView: View {
             ScrollView {
                 BlockDetailsView(layout: layout, block: block)
                     .padding()
+                    .frame(minWidth: 350)
             }
         }
     }
