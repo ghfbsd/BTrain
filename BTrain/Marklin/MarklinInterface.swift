@@ -100,6 +100,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         disconnectCompletionBlocks = completion
         completionBlocks.removeAll()
         client?.stop()
+        first = true
     }
 
     func execute(command: Command, completion: CompletionBlock? = nil) {
