@@ -243,8 +243,9 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                     let loks = layout?.locomotives
                     if loks?.elements.count == 0 { return }
                     let lok = loks!.elements[0]
-                    BTLogger.debug("starting registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
-                    send(message: MarklinCANMessageFactory.MFXbind(UID: UID, addr: UInt16(lok.address)), priority: .high)
+                    BTLogger.debug("abort registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
+                    //BTLogger.debug("starting registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
+                    //send(message: MarklinCANMessageFactory.MFXbind(UID: UID, addr: UInt16(lok.address)), priority: .high)
                 }
             case .bind(let UID, let addr, _):
                 if msg.dlc != 6 {
