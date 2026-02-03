@@ -41,6 +41,7 @@ struct RouteStepBlockView: View {
                     .disabled(block.category != .station)
                     .textFieldStyle(.squareBorder)
                     .unitStyle("s")
+                    .frame(maxWidth: 50)
             }
         }
     }

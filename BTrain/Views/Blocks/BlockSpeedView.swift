@@ -20,6 +20,7 @@ struct BlockSpeedView: View {
             UndoProvider($block.brakingSpeed) { speed in
                 TextField("Braking:", value: speed, format: .number, prompt: Text("\(LayoutFactory.DefaultBrakingSpeed)"))
                     .unitStyle("kph")
+                    .frame(maxWidth: 175)
             }
 
             UndoProvider($block.speedLimit) { speedLimit in

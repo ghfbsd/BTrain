@@ -69,11 +69,13 @@ struct RouteListView: View {
                         layout.sortRoutes()
                     }
                 }.padding()
-            }.frame(maxWidth: SideListFixedWidth)
+            }.frame(width: 300) //.frame(maxWidth: SideListFixedWidth)
+            Spacer()
 
             if let routeId = selection, let route = layout.route(for: routeId, trainId: nil) {
                 RouteView(layout: layout, route: route)
                     .id(routeId) // SWIFTUI BUG: Need to re-create the view for each route otherwise it crashes when switching between certain routes
+                    //.frame(minWidth:700)
             } else {
                 CenteredLabelView(label: "No Selected Route")
             }

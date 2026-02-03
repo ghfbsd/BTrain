@@ -49,60 +49,30 @@ struct RouteScriptCommandView: View {
     }
 
     var body: some View {
-        HStack {
-            if command.action.draggable {
-                Text("≣")
-            }
-            if commandErrorIds.contains(command.id.uuidString) {
-                Text("○")
-                    .foregroundColor(.red)
-            }
-
-            if command.action.mutable {
-                Picker("Command", selection: $command.action) {
-                    ForEach(RouteScriptCommand.Action.allCases.filter { $0 != .start && $0 != .stop}, id: \.self) {
-                        Text($0.rawValue).tag($0 as RouteScriptCommand.Action?)
-                    }
+        ScrollView([.horizontal]) {
+            HStack {
+                if command.action.draggable {
+                    Text("≣")
                 }
-                .labelsHidden()
-                .fixedSize()
-            }
-
-            switch command.action {
-            case .start:
-                Text("Start in")
-                    .fixedSize()
-                BlockPicker(layout: layout, blockId: $command.blockId)
+                if commandErrorIds.contains(command.id.uuidString) {
+                    Text("○")
+                        .foregroundColor(.red)
+                }
+                
+                if command.action.mutable {
+                    Picker("Command", selection: $command.action) {
+                        ForEach(RouteScriptCommand.Action.allCases.filter { $0 != .start && $0 != .stop}, id: \.self) {
+                            Text($0.rawValue).tag($0 as RouteScriptCommand.Action?)
+                        }
+                    }
                     .labelsHidden()
                     .fixedSize()
-                Text("with direction")
-                    .fixedSize()
-                DirectionPicker(direction: $command.direction)
-                    .labelsHidden()
-
-                Text("and")
-
-                functions
-
-            case .stop:
-                Text("Completion:")
-                    .fixedSize()
-
-                functions
-
-            case .move:
-                Text("to")
-                    .fixedSize()
-                Picker("DestinationType", selection: $command.destinationType) {
-                    ForEach(RouteScriptCommand.MoveDestinationType.allCases, id: \.self) {
-                        Text($0.rawValue).tag($0 as RouteScriptCommand.MoveDestinationType)
-                    }
                 }
-                .labelsHidden()
-                .fixedSize()
-
-                switch command.destinationType {
-                case .block:
+                
+                switch command.action {
+                case .start:
+                    Text("Start in")
+                        .fixedSize()
                     BlockPicker(layout: layout, blockId: $command.blockId)
                         .labelsHidden()
                         .fixedSize()
@@ -110,40 +80,70 @@ struct RouteScriptCommandView: View {
                         .fixedSize()
                     DirectionPicker(direction: $command.direction)
                         .labelsHidden()
-                case .station:
-                    StationPicker(layout: layout, stationId: $command.stationId)
+                    
+                    Text("and")
+                    
+                    functions
+                    
+                case .stop:
+                    Text("Completion:")
                         .fixedSize()
-                }
-
-                if layout.blocks[command.blockId]?.category == .station {
-                    Stepper("and wait \(command.waitDuration) seconds", value: $command.waitDuration, in: 0 ... 100, step: 10)
+                    
+                    functions
+                    
+                case .move:
+                    Text("to")
                         .fixedSize()
-                }
-
-                Text("and")
-
-                functions
-
-            case .loop:
-                Stepper("\(command.repeatCount) times", value: $command.repeatCount, in: 1 ... 10)
+                    Picker("DestinationType", selection: $command.destinationType) {
+                        ForEach(RouteScriptCommand.MoveDestinationType.allCases, id: \.self) {
+                            Text($0.rawValue).tag($0 as RouteScriptCommand.MoveDestinationType)
+                        }
+                    }
+                    .labelsHidden()
                     .fixedSize()
-            }
-
-            if command.action != .stop {
-                Button("⊕") {
-                    script.commands.insert(source: RouteScriptCommand(action: .move), after: command)
-                }.buttonStyle(.borderless)
-            }
-
-            if command.action.deletable {
-                Button("⊖") {
-                    script.commands.remove(source: command)
-                }.buttonStyle(.borderless)
-            }
-        }.sheet(isPresented: $showFunctionsSheet) {
+                    
+                    switch command.destinationType {
+                    case .block:
+                        BlockPicker(layout: layout, blockId: $command.blockId)
+                            .labelsHidden()
+                            .fixedSize()
+                        Text("with direction")
+                            .fixedSize()
+                        DirectionPicker(direction: $command.direction)
+                            .labelsHidden()
+                    case .station:
+                        StationPicker(layout: layout, stationId: $command.stationId)
+                            .fixedSize()
+                    }
+                    
+                    if layout.blocks[command.blockId]?.category == .station {
+                        Stepper("and wait \(command.waitDuration) seconds", value: $command.waitDuration, in: 0 ... 100, step: 10)
+                            .fixedSize()
+                    }
+                    
+                    Text("and")
+                    
+                    functions
+                    
+                case .loop:
+                    Stepper("\(command.repeatCount) times", value: $command.repeatCount, in: 1 ... 10)
+                        .fixedSize()
+                }
+                
+                if command.action != .stop {
+                    Button("⊕") {
+                        script.commands.insert(source: RouteScriptCommand(action: .move), after: command)
+                    }.buttonStyle(.borderless)
+                }
+                
+                if command.action.deletable {
+                    Button("⊖") {
+                        script.commands.remove(source: command)
+                    }.buttonStyle(.borderless)
+                }
+            }}.sheet(isPresented: $showFunctionsSheet) {
             RouteScriptFunctionsView(doc: doc, catalog: doc.locomotiveFunctionsCatalog, cmd: $command)
                 .padding()
-                .frame(width: 800, height: 300)
         }
     }
 }
