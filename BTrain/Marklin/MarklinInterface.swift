@@ -47,8 +47,6 @@ final class MarklinInterface: CommandInterface, ObservableObject {
 
     private let resources = MarklinInterfaceResources()
     
-    private var first = true
-
     /// Returns the URL of the CS3 server
     private var serverURL: URL? {
         guard let address = client?.address else {
@@ -72,6 +70,12 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         if let client = client {
             client.start { [weak self] in
                 if let serverURL = self?.serverURL {
+                    if self?.CS3 == .box {
+                        // Could send PING and check whether response includes an MS2 (or CS3!) to check for
+                        // master controller conflicts; if MS2/CS3 registers a loco it can cause problems if we
+                        // try to, too.
+                        client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
+                    }
                     self?.resources.fetchResources(server: serverURL) {
                         onReady()
                     }
@@ -100,7 +104,6 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         disconnectCompletionBlocks = completion
         completionBlocks.removeAll()
         client?.stop()
-        first = true
     }
 
     func execute(command: Command, completion: CompletionBlock? = nil) {
@@ -336,14 +339,6 @@ final class MarklinInterface: CommandInterface, ObservableObject {
 
         if let completion = completion {
             completionBlocks[message.raw] = (completionBlocks[message.raw] ?? []) + [completion]
-        }
-
-        if first && CS3 == .box {
-            // Could send PING and check whether response includes an MS2 (or CS3!) to check for
-            // master controller conflicts; if MS2/CS3 registers a loco it can cause problems if we
-            // try to, too.
-            client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
-            first = false
         }
         
         client.send(data: message.data, priority: priority == .high) {
