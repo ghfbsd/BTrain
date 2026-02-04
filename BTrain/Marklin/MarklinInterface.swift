@@ -243,13 +243,12 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                 break // ignore ack for this command
             case .discovery(let UID, let index, let code, _):
                 BTLogger.debug("got discovery ack \(UID.toHex()) index \(index)")
-                if index == 0x20 && code == 0x00 {
+                if index == 0x20 && code == 0x00 && CS3 == .box {
                     let loks = layout?.locomotives
                     if loks?.elements.count == 0 { return }
                     let lok = loks!.elements[0]
-                    BTLogger.debug("abort registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
-                    //BTLogger.debug("starting registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
-                    //send(message: MarklinCANMessageFactory.MFXbind(UID: UID, addr: UInt16(lok.address)), priority: .high)
+                    BTLogger.debug("starting registration for \(UID.toHex()) lok \(lok.name) address \(lok.address)")
+                    send(message: MarklinCANMessageFactory.MFXbind(UID: UID, addr: UInt16(lok.address)), priority: .high)
                 }
             case .bind(let UID, let addr, _):
                 if msg.dlc != 6 {
