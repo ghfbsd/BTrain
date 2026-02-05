@@ -140,7 +140,7 @@ final class LayoutOnConnectTasks: ObservableObject {
             // This gives us all of the info about a particular locomotive
             // First parse into keyword = value dictionary
             var desc: [String : String] = [:]
-            let multi = [".fkt","..nr","..typ","..dauer","..wert",".fkt2","..typ2"]
+            let multi = [".fkt","..nr","..typ","..dauer","..wert",".fkt2","..typ2","..dauer2","..wert2"]
             for line in lines {
                 let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
                 if multi.contains(item[0]) { continue } // skip for later processing
