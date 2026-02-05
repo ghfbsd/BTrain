@@ -386,5 +386,12 @@ final class LayoutDiagnostic: ObservableObject {
                 }
             }
         }
+        
+        // Check for any blocks that aren't stations but have waits defined
+        for block in layout.blocks.elements {
+            if block.category == .free {
+                if block.waitingTime != 0 { block.waitingTime = 0 }
+            }
+        }
     }
 }
