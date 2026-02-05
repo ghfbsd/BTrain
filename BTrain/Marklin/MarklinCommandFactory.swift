@@ -30,7 +30,7 @@ extension MarklinCommand {
         if cmd == 0x03 {
             let UID: UInt32 = .init(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
             let addr = UInt16(message.byte4 << 8) | UInt16(message.byte5)
-            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) mfx bind, addr \(addr)")
+            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) mfx verify, addr \(addr)")
             return .verify(UID: UID, addr: addr, descriptor: descriptor)
         }
         if cmd == 0x21 {
