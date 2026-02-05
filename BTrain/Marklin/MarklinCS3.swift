@@ -149,7 +149,7 @@ struct MarklinCS3 {
     /// - Returns: the functions
     func fetchFunctions(server: URL) async throws -> Functions {
         let url: URL
-        if CS3 == .box {
+        if CS3 == .box || CS3 == .MS2 {
             return functionIconGroups()
         }
         if server.isFileURL {
@@ -168,7 +168,7 @@ struct MarklinCS3 {
     /// - Parameter server: the Central Station URL
     /// - Returns: the SVG sprites
     func fetchSvgSprites(server: URL) async throws -> SvgSprites {
-        if CS3 == .box {
+        if CS3 == .box || CS3 == .MS2 {
             return svgIcons()
         }
         return try await fetch(url: server.appending(path: API_FUNCTIONS_ICONS))
