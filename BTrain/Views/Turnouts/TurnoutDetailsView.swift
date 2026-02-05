@@ -55,8 +55,10 @@ struct TurnoutDetailsView: View {
                     }
                 } else {
                     UndoProvider($turnout.addressValue) { addressValue in
+                        // TODO: Prevent values <= 0
                         TextField("1:", value: addressValue,
-                                  format: .number)
+                                  format: .number, prompt: Text("Integer > 0")
+                        )
                     }
                 }
             }
