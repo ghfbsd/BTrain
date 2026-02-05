@@ -67,7 +67,7 @@ final class LayoutOnConnectTasks: ObservableObject {
         if [.MS2,.box].contains( MarklinInterface().CS3 ) {
             // If not a CS2/CS3, set up a task to monitor Config Data Stream to catch
             // locomotive definitions. This procedure is called repetitively, so we only
-            // want to define the callback!
+            // want to define the callback once!
             if interface.callbacks.configChanges.all.count == 0 {
                 interface.callbacks.register(forConfigDataStream: getConfigData)
             }
@@ -140,7 +140,7 @@ final class LayoutOnConnectTasks: ObservableObject {
             // This gives us all of the info about a particular locomotive
             // First parse into keyword = value dictionary
             var desc: [String : String] = [:]
-            let multi = [".fkt","..nr","..typ","..dauer","..wert"]
+            let multi = [".fkt","..nr","..typ","..dauer","..wert",".fkt2","..typ2"]
             for line in lines {
                 let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
                 if multi.contains(item[0]) { continue } // skip for later processing
