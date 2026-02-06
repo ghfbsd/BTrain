@@ -61,6 +61,9 @@ struct MarklinCANMessagePrinter {
 
         case .locomotives(priority: _, descriptor: let descriptor):
             return descriptor?.description
+            
+        case .ping(UID: _, version: _, deviceID: _, descriptor: let descriptor):
+            return descriptor?.description
         
         case .lokliste(priority: _, descriptor: let descriptor):
             return descriptor?.description
@@ -84,6 +87,8 @@ struct MarklinCANMessagePrinter {
             case .bind(UID: _, addr: _, descriptor: let descriptor):
                 return descriptor?.description
             case .verify(UID: _, addr: _, descriptor: let descriptor):
+                return descriptor?.description
+            case .ping(UID: _, version: _, deviceID: _, descriptor: let descriptor):
                 return descriptor?.description
 
             case .none:

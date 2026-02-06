@@ -70,11 +70,12 @@ final class MarklinInterface: CommandInterface, ObservableObject {
         if let client = client {
             client.start { [weak self] in
                 if let serverURL = self?.serverURL {
-                    if self?.CS3 == .box {
+                    if self?.CS3 != .CS3 {
                         // Could send PING and check whether response includes an MS2 (or CS3!) to check for
                         // master controller conflicts; if MS2/CS3 registers a loco it can cause problems if we
                         // try to, too.
                         client.send(data: MarklinCANMessageFactory.boot().data, priority: true, onCompletion: {})
+                        client.send(data: MarklinCANMessageFactory.ping().data, priority: false, onCompletion: {})
                     }
                     self?.resources.fetchResources(server: serverURL) {
                         onReady()
@@ -215,6 +216,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                 break
             case .verify(UID: _, addr: _, descriptor: _):
                 break
+            case .ping(UID: _, version: _, deviceID: _, descriptor: _):
+                break
             }
             return
         }
@@ -263,6 +266,30 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                 else {
                     BTLogger.debug("MFX loco \(UID.toHex()) registered as MFX \(addr)")
                 }
+            case .ping(let UID, let version, let deviceID, let descriptor):
+                if msg.dlc != 8 {
+                    BTLogger.error("Malformed PING response")
+                } else {
+                    // If gleisbox-only operation selected, need to prevent us from registering locos - they will do it
+                    // and if we also try, there will be a clash in the registration process.
+                    if deviceID & 0xff >= 0x30 && deviceID & 0xff <= 0x34 {
+                        if CS3 == .box {
+                            BTLogger.warning("MS2 found, but Gleisbox-only in preferences: overriding preferences")
+                            //_ = Alert(message: String("MS2 found, but preferences says Gleisbox-only: overriding preferences"))
+                            CS3 = .MS2
+                        }
+                        BTLogger.debug("MS2 found: \(60653+(deviceID & 0x07)) \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                    }
+                    if deviceID & 0xfff0 == 0xfff0 {
+                        if CS3 == .box {
+                            BTLogger.warning("CS2/3 found, but Gleisbox-only in preferences: overriding preferences")
+                            //_ = Alert(message: String("MS2 found, but preferences says Gleisbox-only: overriding preferences"))
+                            CS3 = .CS3
+                        }
+                        BTLogger.debug("CS2/3 \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                    }
+                }
+                
             }
             return
         }
@@ -447,4 +474,37 @@ class ConfigDataStream: CustomStringConvertible {
    func length() -> (UInt32,UInt32) {
        return (self.actualLength, self.expectedLength)
    }
+}
+
+struct Alert<Content: View>: View {
+    var message: String
+    let content: Content
+    @Environment(\.presentationMode) var presentationMode
+    init(_ message: String, @ViewBuilder content: () -> Content) {
+        self.message = message
+        self.content = content()
+    }
+    var body: some View {
+        VStack(alignment: .center) {
+            Text(message)
+                .foregroundColor(.black)
+                .font(.system(size: 24, weight: .bold))
+            //Divider()
+            HStack {
+                Spacer()
+                Button("OK") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+                Spacer()
+            }
+        }.background(Color.init(hue: 63/360, saturation: 1.0, brightness: 1.0, opacity: 1.0))
+        .frame(maxWidth: 400)
+    }
+}
+
+struct Alert_Previews: PreviewProvider {
+    static var previews: some View {
+        Alert("This is the content of the alert") {}
+    }
 }

@@ -14,6 +14,9 @@ import Foundation
 
 /// These are the commands specific to the Marklin CS2/3
 enum MarklinCommand {
+    // This command is sent by us to figure out what other devices (MS2, Gleisbox) are connected to the CAN bus
+    case ping(UID: UInt32, version: UInt16, deviceID: UInt16, descriptor: CommandDescriptor? = nil)
+    
     /// This command is received from the CS3 when requesting configuration data, like the list of locomotives.
     case configDataStream(hash: UInt16, length: UInt32?, CRC: UInt16?, data: [UInt8], descriptor: CommandDescriptor? = nil)
     
