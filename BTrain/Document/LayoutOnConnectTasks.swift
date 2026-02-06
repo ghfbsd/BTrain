@@ -152,17 +152,17 @@ final class LayoutOnConnectTasks: ObservableObject {
             // It should be possible to add function icons here, too
             var fns = [CommandLocomotiveFunction](), typ = 0, dauer = 0, wert = 0, nr = 0
             for line in lines {
-                let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "=")
-                if item[0] == ".fkt" {
+                let item = line.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "="), it = item[0]
+                if it == ".fkt" || it == ".fkt2"{
                     if typ+dauer+wert == 0 { continue } // only interested in functions
                     fns.append(CommandLocomotiveFunction(nr: UInt8(nr), state: UInt8(wert), type: UInt32(typ)))
                     typ = 0; dauer = 0; wert = 0; nr += 1
                     continue
                 }
-                if item.count > 1 && multi.contains(item[0]) {
-                    if item[0] == "..typ" { typ = Int(item[1]) ?? 0 }
-                    if item[0] == "..dauer" { dauer = Int(item[1]) ?? 0 }
-                    if item[0] == "..wert" { wert = Int(item[1]) ?? 0 }
+                if item.count > 1 && multi.contains(it) {
+                    if it == "..typ" || it == "..typ2" { typ = Int(item[1]) ?? 0 }
+                    if it == "..dauer" || it == "..dauer2" { dauer = Int(item[1]) ?? 0 }
+                    if it == "..wert" || it == "..wert2" { wert = Int(item[1]) ?? 0 }
                 }
             }
             fns.append(CommandLocomotiveFunction(nr: UInt8(nr), state: UInt8(wert), type: UInt32(typ)))
