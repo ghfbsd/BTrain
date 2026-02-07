@@ -266,7 +266,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                 else {
                     BTLogger.debug("MFX loco \(UID.toHex()) registered as MFX \(addr)")
                 }
-            case .ping(let UID, let version, let deviceID, let descriptor):
+            case .ping(let UID, let version, let deviceID, _):
                 if msg.dlc != 8 {
                     BTLogger.error("Malformed PING response")
                 } else {
@@ -275,7 +275,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                     if deviceID & 0xff >= 0x30 && deviceID & 0xff <= 0x34 {
                         if CS3 == .box {
                             BTLogger.warning("MS2 found, but Gleisbox-only in preferences: overriding preferences")
-                            //_ = Alert(message: String("MS2 found, but preferences says Gleisbox-only: overriding preferences"))
+                            layout?.alert = "MS2 found, but preferences says Gleisbox-only: overriding preferences"
                             CS3 = .MS2
                         }
                         BTLogger.debug("MS2 found: \(60653+(deviceID & 0x07)) \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
@@ -283,7 +283,7 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                     if deviceID & 0xfff0 == 0xfff0 {
                         if CS3 == .box {
                             BTLogger.warning("CS2/3 found, but Gleisbox-only in preferences: overriding preferences")
-                            //_ = Alert(message: String("MS2 found, but preferences says Gleisbox-only: overriding preferences"))
+                            layout?.alert = "CS2/3 found, but preferences says Gleisbox-only: overriding preferences"
                             CS3 = .CS3
                         }
                         BTLogger.debug("CS2/3 \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
@@ -478,9 +478,11 @@ class ConfigDataStream: CustomStringConvertible {
 
 struct Alert<Content: View>: View {
     var message: String
+    let layout: Layout
     let content: Content
     @Environment(\.presentationMode) var presentationMode
-    init(_ message: String, @ViewBuilder content: () -> Content) {
+    init(_ layout: Layout, _ message: String, @ViewBuilder content: () -> Content) {
+        self.layout = layout
         self.message = message
         self.content = content()
     }
@@ -489,11 +491,10 @@ struct Alert<Content: View>: View {
             Text(message)
                 .foregroundColor(.black)
                 .font(.system(size: 24, weight: .bold))
-            //Divider()
             HStack {
                 Spacer()
                 Button("OK") {
-                    presentationMode.wrappedValue.dismiss()
+                    self.layout.alert = nil
                 }
                 .keyboardShortcut(.defaultAction)
                 Spacer()
@@ -505,6 +506,6 @@ struct Alert<Content: View>: View {
 
 struct Alert_Previews: PreviewProvider {
     static var previews: some View {
-        Alert("This is the content of the alert") {}
+        Alert(LayoutLoop2().newLayout(), "This is the content of the alert") { }
     }
 }

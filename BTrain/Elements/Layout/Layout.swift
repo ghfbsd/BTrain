@@ -83,6 +83,8 @@ final class Layout: Element, ObservableObject {
 
     // Non-nil when a layout runtime error occurred
     @Published var runtimeError: String?
+    
+    @Published var alert: String?
 
     // MARK: Init
 

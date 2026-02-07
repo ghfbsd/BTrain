@@ -37,7 +37,9 @@ struct SwitchboardContainerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if state.editing {
+            if layout.alert != nil {
+                Alert(layout, layout.alert!) {}
+            } else if state.editing {
                 SwitchboardEditControlsView(layout: layout, state: state, document: document, switchboard: switchboard)
                     .padding()
             } else if document.showSwitchboardViewSettings {
@@ -56,7 +58,7 @@ struct SwitchboardContainerView: View {
                             Text("No Elements")
 
                             HStack {
-                                Button("􀈊 Edit Layout") {
+                                Button("⚒︎✍︎Edit Layout") {
                                     state.editing.toggle()
                                 }
                             }
@@ -74,18 +76,35 @@ struct SwitchboardContainerView: View {
 }
 
 struct OverviewSwitchboardView_Previews: PreviewProvider {
-    static let doc: LayoutDocument = {
+    static let docWithError: LayoutDocument = {
         let doc = LayoutDocument(layout: LayoutLoop2().newLayout())
-        doc.showSwitchboardViewSettings = true
-        doc.layout.runtimeError = "Unexpected feedback"
+            doc.showSwitchboardViewSettings = true
+            doc.layout.runtimeError = "Unexpected feedback"
+        return doc
+    }()
+    
+    static let docWithAlert: LayoutDocument = {
+        let doc = LayoutDocument(layout: LayoutLoop2().newLayout())
+            doc.showSwitchboardViewSettings = true
+            doc.layout.alert = "This is an alert"
         return doc
     }()
 
     static var previews: some View {
-        SwitchboardContainerView(layout: doc.layout,
-                                 layoutController: doc.layoutController,
-                                 document: doc,
-                                 switchboard: doc.switchboard,
-                                 state: doc.switchboard.state)
+        Group {
+            SwitchboardContainerView(layout: docWithError.layout,
+                                     layoutController: docWithError.layoutController,
+                                     document: docWithError,
+                                     switchboard: docWithError.switchboard,
+                                     state: docWithError.switchboard.state)
+            .previewDisplayName("Showing error")
+            
+            SwitchboardContainerView(layout: docWithAlert.layout,
+                                     layoutController: docWithAlert.layoutController,
+                                     document: docWithAlert,
+                                     switchboard: docWithAlert.switchboard,
+                                     state: docWithAlert.switchboard.state)
+            .previewDisplayName("Showing alert")
+        }
     }
 }
