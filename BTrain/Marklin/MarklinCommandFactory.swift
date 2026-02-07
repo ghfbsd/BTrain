@@ -143,13 +143,6 @@ extension Command {
             let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) feedback: \(deviceID):\(contactID), from \(oldValue) to \(newValue), t = \(time)ms - \(ack)")
             return .feedback(deviceID: deviceID, contactID: contactID, oldValue: oldValue, newValue: newValue, time: time, descriptor: descriptor)
         }
-        if cmd == 0x18 {
-            let UID = UInt32(message.byte0) << 24 | UInt32(message.byte1) << 16 | UInt32(message.byte2) << 8 | UInt32(message.byte3) << 0
-            let version = UInt16(message.byte4) << 8 | UInt16(message.byte5) << 0
-            let deviceID = UInt16(message.byte6) << 8 | UInt16(message.byte7) << 0
-            let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) ping \(ack): UID:\(UID.toHex()), version:\(version.toHex()), device:\(deviceID.toHex())")
-            return .ping(UID: UID, version: version, deviceID: deviceID, descriptor: descriptor)
-        }
         if cmd == 0x20 {
             let descriptor = CommandDescriptor(data: message.data, description: "\(cmd.toHex()) request locomotives - \(ack)")
             return .locomotives(descriptor: descriptor)
@@ -202,9 +195,6 @@ extension MarklinCANMessage {
 
         case .locomotives(priority: let priority, descriptor: _):
             return (MarklinCANMessageFactory.locomotives(), priority)
-            
-        case .ping(UID: _, version: _, deviceID: _, descriptor: _):
-            return (MarklinCANMessageFactory.ping(), .normal)
         
         case .lokliste(priority: let priority, descriptor: _):
             return (MarklinCANMessageFactory.lokliste(), priority)

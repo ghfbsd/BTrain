@@ -45,8 +45,6 @@ enum Command {
 
     case feedback(deviceID: UInt16, contactID: UInt16, oldValue: UInt8, newValue: UInt8, time: UInt32, priority: Priority = .normal, descriptor: CommandDescriptor? = nil)
     
-    case ping(UID: UInt32 = 0, version: UInt16 = 0, deviceID: UInt16 = 0, descriptor: CommandDescriptor? = nil)
-
     // Asks the Digital Control System to retrieve the locomotives description.
     // This command uses the completion block of the execute() method to notify when
     // the locomotives have all been fetched
