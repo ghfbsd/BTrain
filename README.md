@@ -74,13 +74,12 @@ Either
 - Take into account the length of the train, block, turnout, and feedback position to accurately understand the location of each train to reserve the necessary block to avoid a collision.
 - Visual feedback of the exact location of the train, including the locomotive and its wagons, within blocks.
 - Unexpected feedback detection.
-- Automatic discovery of locomotives (with a CS3 only).
+- Automatic discovery of locomotives (with either a CS3 or an MS2).
 - Offline layout simulator to simulate the movement of the trains, including feedbacks and turnouts, without having to connect to a real Central Station 3.
 
 **Known Issues**
 
 - The document does not get marked as "Edited" for some changes.
-- Gleisbox support does not provide full access to all locomotive functions.
 
 **Glossary**
 
@@ -98,9 +97,10 @@ If you want a pre-built app that *should* be ready to run on your Mac (but
 there are no guarantees - sorry), download the .dmg file in the latest release
 materials.  Depending on how you manage security on your Mac, it may be
 reluctant to open the .dmg file because it doesn't come from the App store.  
-If so, go to the *Privacy & Security* category and allow it to be opened,
-either by a one-time click on the last offending action in the list or by
-changing the *Allow applications from* tab setting.
+If so, go to the *Privacy & Security* category in *System Settings...* and
+allow it to be opened, either by a one-time click on the last offending action
+in the list or by changing the *Allow applications from...* tab setting to
+include *Known developers*.
 
 **Build from Source**
 
