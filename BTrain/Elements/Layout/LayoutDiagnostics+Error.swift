@@ -29,6 +29,7 @@ extension LayoutDiagnostic {
         case locDuplicateAddress(loc: Locomotive)
         case locMissingLength(loc: Locomotive)
 
+        case turnoutInvalidAddress(turnout: Turnout)
         case turnoutIdAlreadyExists(turnout: Turnout)
         case turnoutNameAlreadyExists(turnout: Turnout)
         case turnoutMissingTransition(turnout: Turnout, socket: String)
@@ -71,6 +72,8 @@ extension LayoutDiagnostic.DiagnosticError: LocalizedError {
         case let .blockDuplicateFeedback(block: block, feedback: feedback):
             return "Block \(block.name) uses feedback \(feedback.name) which is already used by another block"
 
+        case let .turnoutInvalidAddress(turnout: turnout):
+            return "Turnout ID \(turnout.id) (named \(turnout.name)) has an invalid address (must be > 0)"
         case let .turnoutIdAlreadyExists(turnout: turnout):
             return "Turnout ID \(turnout.id) (named \(turnout.name)) is used by more than one turnout"
         case let .turnoutNameAlreadyExists(turnout: turnout):

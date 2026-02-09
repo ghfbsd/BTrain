@@ -141,7 +141,7 @@ extension Turnout {
             Int(address.address)
         }
         set {
-            address = .init(UInt32(newValue), addressProtocol)
+            address = .init(newValue < 0 ? 0 : UInt32(newValue), addressProtocol)
         }
     }
 
@@ -150,7 +150,7 @@ extension Turnout {
             Int(address2.address)
         }
         set {
-            address2 = .init(UInt32(newValue), addressProtocol)
+            address2 = .init(newValue < 0 ? 0 : UInt32(newValue), addressProtocol)
         }
     }
 }

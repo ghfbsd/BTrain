@@ -140,6 +140,15 @@ final class LayoutDiagnostic: ObservableObject {
     func checkForDuplicateTurnouts(_ errors: inout [DiagnosticError]) {
         let enabledTurnouts = layout.turnouts.elements.filter(\.enabled)
 
+        for turnout in enabledTurnouts {
+            if turnout.address.actualAddress == 0 {
+                errors.append(DiagnosticError.turnoutInvalidAddress(turnout: turnout))
+            }
+            if turnout.doubleAddress && turnout.address2.actualAddress == 0 {
+                errors.append(DiagnosticError.turnoutInvalidAddress(turnout: turnout))
+            }
+        }
+        
         var ids = Set<Identifier<Turnout>>()
         for turnout in enabledTurnouts {
             if ids.contains(turnout.id) {
