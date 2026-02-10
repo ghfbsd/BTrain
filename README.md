@@ -74,6 +74,7 @@ Either
 - Take into account the length of the train, block, turnout, and feedback position to accurately understand the location of each train to reserve the necessary block to avoid a collision.
 - Visual feedback of the exact location of the train, including the locomotive and its wagons, within blocks.
 - Unexpected feedback detection.
+- Space bar is the panic button to cut power if the layout is in trouble.
 - Automatic discovery of locomotives (with either a CS3 or an MS2).
 - Offline layout simulator to simulate the movement of the trains, including feedbacks and turnouts, without having to connect to a real Central Station 3.
 

@@ -58,11 +58,13 @@ struct ConnectCommandsView: View {
                     document.disable {}
                 }
                 .help("Disable Power")
+                .keyboardShortcut(.space, modifiers: [])  // panic button
             } else {
                 Button("Go") {
                     document.enable {}
                 }
                 .help("Enable Power")
+                .keyboardShortcut(.space, modifiers: [])  // for now; not sure if this is a good idea
             }
         } else {
             Button("Connect") {
