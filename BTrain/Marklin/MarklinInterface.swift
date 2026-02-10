@@ -27,6 +27,8 @@ final class MarklinInterface: CommandInterface, ObservableObject {
     let locomotivesFetcher = MarklinFetchLocomotives()
     
     var CDStreams: [UInt16: ConfigDataStream] = [:]
+    
+    var gizmos: [UInt32: MarklinCS3.GizmoType] = [:]
 
     typealias CompletionBlock = () -> Void
     private var disconnectCompletionBlocks: CompletionBlock?
@@ -272,21 +274,28 @@ final class MarklinInterface: CommandInterface, ObservableObject {
                 } else {
                     // If gleisbox-only operation selected, need to prevent us from registering locos - they will do it
                     // and if we also try, there will be a clash in the registration process.
-                    if deviceID & 0xff >= 0x30 && deviceID & 0xff <= 0x34 {
+                    if deviceID & 0xff >= 0x30 && deviceID & 0xff <= 0x34 {  // MS2 detected?
+                        let digit = (deviceID & 0xff == 0x30) ? 3 : 7
                         if CS3 == .box {
                             BTLogger.warning("MS2 found, but Gleisbox-only in preferences: overriding preferences")
                             layout?.alert = "MS2 found, but preferences says Gleisbox-only: overriding preferences"
                             CS3 = .MS2
                         }
-                        BTLogger.debug("MS2 found: \(60653+(deviceID & 0x07)) \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                        if gizmos[UID] == nil {
+                            BTLogger.debug("MS2 found (\(deviceID & 0xff == 0x33 ? "aux" : "main")): \(60650 + digit) \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                            gizmos[UID] = .MS2
+                        }
                     }
-                    if deviceID & 0xfff0 == 0xfff0 {
+                    if deviceID & 0xfff0 == 0xfff0 {  // CS2/3 detected?
                         if CS3 == .box {
                             BTLogger.warning("CS2/3 found, but Gleisbox-only in preferences: overriding preferences")
                             layout?.alert = "CS2/3 found, but preferences says Gleisbox-only: overriding preferences"
                             CS3 = .CS3
                         }
-                        BTLogger.debug("CS2/3 \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                        if gizmos[UID] == nil {
+                            BTLogger.debug("CS2/3 \(UID.toHex()), version \(version >> 8).\(version & 0xff)")
+                            gizmos[UID] = .CS3
+                        }
                     }
                 }
                 
