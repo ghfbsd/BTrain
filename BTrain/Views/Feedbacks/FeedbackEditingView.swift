@@ -61,6 +61,7 @@ struct FeedbackEditingView: View {
         }) { feedback in
             FeedbackDetailsView(layout: layout, feedback: feedback)
         }
+        .frame(minHeight: 200)
         .sheet(isPresented: $showAddNewFeedback, onDismiss: {
             if newFeedback != NewFeedback.empty() {
                 addNewFeedback(name: newFeedback.name, deviceID: newFeedback.deviceID, contactID: newFeedback.contactID)
