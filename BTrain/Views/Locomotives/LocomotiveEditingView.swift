@@ -70,6 +70,7 @@ struct LocomotiveEditingView: View {
         .alert("Error downloading the list of locomotives: \(discoverLocomotiveError?.localizedDescription ?? "")", isPresented: $discoverLocomotiveShowError) {
             Button("OK") {}
         }
+        .frame(minWidth: 750)
     }
 
     func discover(merge: Bool) {
