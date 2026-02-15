@@ -33,13 +33,13 @@ struct TrainControlScriptView: View {
 
             Spacer().fixedSpace()
 
-            Button("􀊄 Start") {
+            Button("§ Start") {
                 document.layoutController.schedule(scriptId: selectedLayoutScript!)
             }.disabled(selectedLayoutScript == nil || document.layoutController.isRunning(scriptId: selectedLayoutScript))
 
             Spacer().fixedSpace()
 
-            Button("􀛷 Stop") {
+            Button("§ Stop") {
                 try? document.layoutController.stop(scriptId: selectedLayoutScript!)
             }.disabled(selectedLayoutScript == nil || !document.layoutController.isRunning(scriptId: selectedLayoutScript))
 
