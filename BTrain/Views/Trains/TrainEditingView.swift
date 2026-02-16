@@ -47,7 +47,7 @@ struct TrainEditingView: View {
                 TrainDetailsView(document: document, train: train)
                     .padding()
             }
-        }
+        }.frame(minHeight:200)
     }
 }
 
