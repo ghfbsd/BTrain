@@ -24,7 +24,7 @@ struct TrainControlSpeedView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Button(loc.directionForward ? "❯" : "❮") {
+                Button(loc.directionForward ? "❯f" : "b❮") {
                     document.layoutController.setLocomotiveDirection(loc, forward: !loc.directionForward)
                 }
                 .buttonStyle(.borderless)
