@@ -54,9 +54,18 @@ final class LayoutFeedbackMonitor {
     func handleUnexpectedFeedbacks() throws {
         for feedback in layout.feedbacks.elements.filter(\.detected) {
             if !expectedFeedbacks.contains(feedback.id) {
-                BTLogger.error("Unexpected feedback \(feedback.name) detected! Expected feedbacks: \(expectedFeedbacks.toString(layout: layout))")
+                BTLogger.error("Unexpected feedback \(feedback.name) detected! Expected feedbacks: \(feedbackNames(expectedFeedbacks)/*expectedFeedbacks.toString(layout: layout)*/)")
                 throw LayoutError.unexpectedFeedback(feedback: feedback)
             }
         }
+    }
+    
+    func feedbackNames(_ set: Set<Identifier<Feedback>>) -> String {
+        var s = "", c = ""
+        for e in set {
+            let fdbk = layout.feedbacks.elements.first(where: {$0.id == e} )
+            s += c + ((fdbk == nil || fdbk?.name == nil) ? "<\(e)>" : fdbk!.name); c = " "
+        }
+        return "[" + s + "]"
     }
 }

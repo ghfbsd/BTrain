@@ -195,7 +195,7 @@ final class LayoutController: ObservableObject, LayoutControlling {
             // should be updated promptly to reflect the new state.
             try updateExpectedFeedbacks()
 
-            BTLogger.debug("Expected feedbacks: \(feedbackMonitor.expectedFeedbacks)")
+            BTLogger.debug("Expected feedbacks: \(feedbackMonitor.feedbackNames(feedbackMonitor.expectedFeedbacks))")
             
             // Update and run any layout scripts
             try conductor.tick()
