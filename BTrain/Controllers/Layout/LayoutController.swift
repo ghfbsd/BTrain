@@ -144,7 +144,7 @@ final class LayoutController: ObservableObject, LayoutControlling {
                 try layout.freeElements(train: train)
                 try layout.occupyBlocksWith(train: train)
             } catch {
-                BTLogger.error("Unable to spread \(train): \(error)")
+                BTLogger.error("Unable to spread \(train.name): \(error.localizedDescription)")
             }
         }
     }
