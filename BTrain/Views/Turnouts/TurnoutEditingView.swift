@@ -41,6 +41,7 @@ struct TurnoutEditingView: View {
                 TurnoutDetailsView(doc: doc, layout: layout, turnout: turnout)
                     .padding()
             }
+            .frame(minHeight: 200)
         }
     }
 }
