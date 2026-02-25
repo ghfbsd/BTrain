@@ -30,7 +30,7 @@ final class TrainFunctionsController {
             return
         }
 
-        BTLogger.debug("Execute \(functions.count) functions for \(train)")
+        BTLogger.debug("Execute \(functions.count) functions for \(train.name)")
 
         for f in functions {
             let def: CommandLocomotiveFunction

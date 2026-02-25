@@ -281,7 +281,7 @@ final class LayoutReservation {
                 guard transition.reserved == nil || (transition.reserved == train.id && transition.train == train.id) else {
                     throw LayoutError.transitionAlreadyReserved(train: train, transition: transition)
                 }
-                debug("Reserving transition \(transition) for \(train)")
+                debug("Reserving transition \(transition) for \(train.name)")
                 transition.reserved = train.id
                 train.leading.append(transition)
             }

@@ -51,7 +51,7 @@ enum LayoutControllerEvent: CustomStringConvertible {
         case .schedulingChanged:
             return "Scheduling Changed"
         case let .restartTimerExpired(train):
-            return "Restart Timer Expired for \(train)"
+            return "Restart Timer Expired for \(train.name)"
         case .turnoutChanged:
             return "Turnout Changed"
         case .directionChanged:
@@ -59,7 +59,7 @@ enum LayoutControllerEvent: CustomStringConvertible {
         case .speedChanged:
             return "Speed Changed"
         case let .trainPositionChanged(train):
-            return "Train removed: \(train)"
+            return "Train removed: \(train.name)"
         case .scriptScheduled:
             return "Script scheduled"
         }
