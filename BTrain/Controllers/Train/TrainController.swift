@@ -357,6 +357,15 @@ final class TrainController: TrainControlling, CustomStringConvertible {
         }
 
         BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): occupying new blocks \(newBlocks.description)")
+        
+        for atRed in layout.trains.elements.filter( {$0.state == .stopped && $0.scheduling == .managed} ) {
+            // The new position of the train might allow a managed, but stopped train to resume
+            // its progress through the route.  Check for this by simulating a restart timer
+            // expired - there does not seem to be a better way to check whether whatever blockage
+            // stopped the train has now been removed.
+            logDebug("Train '\(atRed.name)' is waiting for something, checking ...")
+            layoutController.runControllers(LayoutControllerEvent.restartTimerExpired(atRed))
+        }
 
         if !newBlocks.isEmpty {
             // For each new block that the train occupies, ensure the route index is updated
