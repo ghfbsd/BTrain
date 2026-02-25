@@ -133,7 +133,9 @@ final class ShortestPathFinder {
     // to = 0:s2:1
     private func shortestPath(from: GraphPathElement, to: GraphPathElement, constraints: PathFinder.Constraints) throws -> GraphPath? {
         // Set the distance of the starting element `from` to 0 as well as an empty path.
-        BTLogger.debug("Measuring path from \(from) exit to \(to) exit:")
+        if verbose {
+            BTLogger.debug("Measuring path from \(from) exit to \(to) exit:")
+        }
         setDistance(0, to: from, path: GraphPath([]))
 
         // Visit the graph and assign distances to all the nodes until the `to` node is reached
