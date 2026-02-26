@@ -28,7 +28,7 @@ struct RouteScriptFunctionsView: View {
             }
             if editedCmd.functions.isEmpty {
                 Spacer()
-                Button("Click 􀁌 To Add a Function") {
+                Button("Click Here To Add a Function") {
                     addFunction()
                 }
                 .buttonStyle(.borderless)
@@ -42,16 +42,17 @@ struct RouteScriptFunctionsView: View {
 
                             Spacer()
 
-                            Button("􀁌") {
+                            Button("⊕") {
                                 addFunction()
                             }.buttonStyle(.borderless)
 
-                            Button("􀁎") {
+                            Button("⊖") {
                                 removeFunction(function: function.wrappedValue)
                             }.buttonStyle(.borderless)
                         }
                     }
                 }
+                .frame(minWidth: 700, minHeight: CGFloat(35 * editedCmd.functions.count))
             }
             Divider()
             HStack {
