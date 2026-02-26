@@ -143,7 +143,7 @@ final class ShortestPathFinder {
 
         if verbose {
             BTLogger.debug("Distances:")
-            for item in distances.sorted(by: { $0.key.node.identifier.uuid < $1.key.node.identifier.uuid }) {
+            for item in distances.sorted(by: { $0.value < $1.value }) {
                 BTLogger.debug("\(item.key) = \(item.value)")
             }
         }
