@@ -232,7 +232,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
                 return
             }
 
-            BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): generating a new route at \(frontBlock.name, privacy: .public) because the leading blocks could not be reserved for route steps \(self.route.steps.description(self.layout), privacy: .public), occupied blocks \(self.train.occupied.blocks.toStrings(), privacy: .public)")
+            BTLogger.router.debug("\(self.train.description(self.layout)): generating a new route at \(frontBlock.name) because the leading blocks could not be reserved for route steps \(self.route.steps.description(self.layout)), occupied blocks \(self.train.occupied.blocks.toStrings())")
 
             // Update the automatic route
             if try updateAutomaticRoute(for: train, layout: layout) {
@@ -246,11 +246,11 @@ final class TrainController: TrainControlling, CustomStringConvertible {
         let result = try layout.updateAutomaticRoute(for: train.id)
         switch result {
         case let .success(route):
-            BTLogger.router.debug("\(train.description(layout), privacy: .public): generated route is \(route.steps.description(layout), privacy: .public)")
+            BTLogger.router.debug("\(train.description(layout)): generated route is \(route.steps.description(layout))")
             return true
 
         case let .failure(error):
-            BTLogger.router.warning("\(train.description(layout), privacy: .public): \(error.localizedDescription, privacy: .public)")
+            BTLogger.router.warning("\(train.description(layout)): \(error.localizedDescription)")
             return false
         }
     }
@@ -261,7 +261,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
 
     func adjustSpeed() throws {
         guard let frontBlock = frontBlock else {
-            BTLogger.router.warning("\(self.train.description(self.layout), privacy: .public): cannot adjust speed because the front block is not defined")
+            BTLogger.router.warning("\(self.train.description(self.layout)): cannot adjust speed because the front block is not defined")
             return
         }
 
@@ -287,13 +287,13 @@ final class TrainController: TrainControlling, CustomStringConvertible {
         // Change the requested speed only if it is different from the current requested speed
         let loc = try train.locomotiveOrThrow()
         if requestedKph != loc.speed.requestedKph {
-            BTLogger.speed.debug("\(self.train.description(self.layout), privacy: .public): controller adjusts speed to \(requestedKph)")
+            BTLogger.speed.debug("\(self.train.description(self.layout)): controller adjusts speed to \(requestedKph)")
             try layoutController.setTrainSpeed(train, requestedKph)
         }
     }
 
     func stopImmediately() throws {
-        BTLogger.speed.debug("\(self.train.description(self.layout), privacy: .public): stop immediately")
+        BTLogger.speed.debug("\(self.train.description(self.layout)): stop immediately")
         try layoutController.setTrainSpeed(train, 0)
     }
 
@@ -338,7 +338,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
                                                                    detectedPosition: detectedPosition,
                                                                    reservation: train.reservation,
                                                                    tailDetected: train.isTailDetected)
-            BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): updated location \(self.train.positions.description(self.layout)) by feedback \(feedback.description, privacy: .public)")
+            BTLogger.router.debug("\(self.train.description(self.layout)): updated location \(self.train.positions.description(self.layout)) by feedback \(feedback.description)")
         }
 
         // Remember the previous occupied blocks to detect all the new blocks
@@ -357,12 +357,12 @@ final class TrainController: TrainControlling, CustomStringConvertible {
         }
 
         BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): occupying new blocks \(newBlocks.description)")
-        
+
         for atRed in layout.trains.elements.filter( {$0.state == .stopped && $0.scheduling == .managed} ) {
             // The new position of the train might allow a managed, but stopped train to resume
             // its progress through the route.  Check for this by simulating a restart timer
-            // expired - there does not seem to be a better way to check whether whatever blockage
-            // stopped the train has now been removed.
+            // expired - there does not seem to be a better way to
+            // check whether whatever blockage stopped the train has now been removed.
             logDebug("Train '\(atRed.name)' is waiting for something, checking ...")
             layoutController.runControllers(LayoutControllerEvent.restartTimerExpired(atRed))
         }
@@ -371,7 +371,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
             // For each new block that the train occupies, ensure the route index is updated
             // and execute any actions related to entering a new block
             for newBlock in newBlocks {
-                BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): update route index and execute functions for new block \(newBlock.description(self.layout))")
+                BTLogger.router.debug("\(self.train.description(self.layout)): update route index and execute functions for new block \(newBlock.description(self.layout))")
 
                 // Update the current route step index
                 train.routeStepIndex += 1
@@ -389,7 +389,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
     }
 
     func reschedule(train: Train, delay: TimeInterval) {
-        BTLogger.router.debug("\(train.description(self.layout), privacy: .public): schedule timer to restart train in \(delay, format: .fixed(precision: 1)) seconds")
+        BTLogger.router.debug("\(train.description(self.layout)): schedule timer to restart train in \(delay, format: .fixed(precision: 1)) seconds")
 
         train.timeUntilAutomaticRestart = delay
         layoutController.scheduleRestartTimer(train: train)
@@ -442,6 +442,6 @@ final class TrainController: TrainControlling, CustomStringConvertible {
     }
 
     func logDebug(_ message: String) {
-        BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): \(message, privacy: .public)")
+        BTLogger.router.debug("\(self.train.description(self.layout)): \(message)")
     }
 }
