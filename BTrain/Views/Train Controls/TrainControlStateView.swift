@@ -65,7 +65,7 @@ struct TrainControlStateView: View {
     var body: some View {
         HStack {
             if let runtimeInfo = trainRuntimeError {
-                Button("􀇾") {
+                Button("⁇") {
                     showingAlert.toggle()
                 }
                 .foregroundColor(.red)
