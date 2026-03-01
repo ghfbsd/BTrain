@@ -33,7 +33,7 @@ struct LayoutScriptEditingView: View {
             }
         }) { script in
             LayoutScriptEditorView(doc: doc, layout: layout, script: script)
-            .frame(minWidth: 500)
+                .frame(minWidth: 500, minHeight: 250)
         }
     }
 }
