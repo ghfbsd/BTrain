@@ -15,6 +15,7 @@ import Foundation
 final class TrainFunctionsController {
     let catalog: LocomotiveFunctionsCatalog?
     let interface: CommandInterface
+    var active: UInt8 = 0
 
     internal init(catalog: LocomotiveFunctionsCatalog?, interface: CommandInterface) {
         self.catalog = catalog
@@ -30,7 +31,7 @@ final class TrainFunctionsController {
             return
         }
 
-        BTLogger.debug("Execute \(functions.count) functions for \(train.name)")
+        BTLogger.debug("Execute \(functions.count) functions for train '\(train.name)'")
 
         for f in functions {
             let def: CommandLocomotiveFunction
@@ -43,12 +44,14 @@ final class TrainFunctionsController {
                 continue
             }
 
+            let act = switch(f.trigger){case .enable: "Enable"; case .disable: "Disable"; case .pulse: "Pulse"}
             if let name = catalog?.name(for: def.type) {
-                BTLogger.debug("Execute function \(name) of type \(def.type) at index \(def.nr) with \(locomotive.name)")
+                BTLogger.debug("\(act) function \(name) of type \(def.type) at index \(def.nr) with \(locomotive.name)")
             } else {
-                BTLogger.debug("Execute function of type \(def.type) at index \(def.nr) with \(locomotive.name)")
+                BTLogger.debug("\(act) function of type \(def.type) at index \(def.nr) with \(locomotive.name)")
             }
 
+            active += 1
             execute(locomotive: locomotive, function: def, trigger: f.trigger, duration: f.duration)
         }
     }
@@ -67,14 +70,16 @@ final class TrainFunctionsController {
 
     private func executeSingle(locomotive: Locomotive, function: CommandLocomotiveFunction, trigger: RouteItemFunction.Trigger) {
         let initialValue = trigger == .disable ? 0 : 1
-        interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: UInt8(initialValue)), completion: nil)
+        interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: UInt8(initialValue)), completion: {
+            self.active -= function.toggle ? 0 : 1
+        })
 
         if function.toggle {
             // The Digital Controller (at least the CS3) does not toggle it back
             // automatically, so we have to do it.
             let finalValue = UInt8(0)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                self.interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: finalValue), completion: nil)
+                self.interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: finalValue), completion: { self.active -= 1 })
             }
         }
     }
@@ -85,7 +90,7 @@ final class TrainFunctionsController {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
             let finalValue = UInt8(0)
-            self.interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: finalValue), completion: nil)
+            self.interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: finalValue), completion: { self.active -= 1 })
         }
     }
 }

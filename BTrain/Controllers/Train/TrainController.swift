@@ -357,7 +357,7 @@ final class TrainController: TrainControlling, CustomStringConvertible {
         }
 
         BTLogger.router.debug("\(self.train.description(self.layout), privacy: .public): occupying new blocks \(newBlocks.description)")
-
+        
         for atRed in layout.trains.elements.filter( {$0.state == .stopped && $0.scheduling == .managed} ) {
             // The new position of the train might allow a managed, but stopped train to resume
             // its progress through the route.  Check for this by simulating a restart timer
@@ -397,7 +397,14 @@ final class TrainController: TrainControlling, CustomStringConvertible {
 
     func routeWillStart() {
         if let functions = route.startFunctions {
-            functionsController.execute(functions: functions, train: train)
+            // Wait for any pending functions for train to finish before activating
+            // any new ones to avoid undoing any actions related to previous route
+            Task {
+                while functionsController.active > 0 {
+                    try await Task.sleep(nanoseconds: 20000)
+                }
+                functionsController.execute(functions: functions, train: train)
+            }
         }
     }
 
