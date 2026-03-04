@@ -376,7 +376,7 @@ final class LayoutDiagnostic: ObservableObject {
         }
     }
 
-    func repair() {
+    func repair(_ doc: LayoutDocument) {
         // Remove any transitions that are looping back to the same socket
         layout.transitions.elements.removeAll { transition in
             transition.a == transition.b
@@ -401,6 +401,12 @@ final class LayoutDiagnostic: ObservableObject {
             if block.category == .free {
                 if block.waitingTime != 0 { block.waitingTime = 0 }
             }
+        }
+        
+        // Reset all actions in case some kind of failure prevented them all from completing
+        let dlc = doc.layoutController
+        for train in layout.trains.elements.filter({ nil != dlc.trainController(forTrain: $0) }) {
+            dlc.trainController(forTrain: train)!.functionsController.active = 0
         }
     }
 }

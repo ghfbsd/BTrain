@@ -111,7 +111,7 @@ struct DeveloperCommandsView: View {
         if document.showDebugModeControls {
             Menu("✄") {
                 Button("Repair Layout") {
-                    LayoutDiagnostic(layout: document.layout).repair()
+                    LayoutDiagnostic(layout: document.layout).repair(document)
                 }
 
                 Divider()
