@@ -93,7 +93,7 @@ struct RouteView: View {
                 let stepError = stepError(unwrappedStep, index)
                 HStack {
                     if stepError {
-                        Text("􀇾").foregroundColor(.red)
+                        Text("⁇").foregroundColor(.red)
                     }
                     switch unwrappedStep {
                     case .block:
@@ -107,7 +107,7 @@ struct RouteView: View {
             HStack {
                 RouteValidationView(layout: layout, route: route, routeError: $routeError)
                 Spacer()
-            }
+            }.frame(minWidth: 700)
 
             HStack {
                 Text("\(route.partialSteps.count) steps")

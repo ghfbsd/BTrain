@@ -59,7 +59,7 @@ struct RouteListView: View {
 
                     Spacer().fixedSpace()
 
-                    Button("Copy") {
+                    Button("⧉") {
                         layout.duplicate(routeId: selection!)
                     }.disabled(selection == nil)
 
@@ -69,7 +69,7 @@ struct RouteListView: View {
                         layout.sortRoutes()
                     }
                 }.padding()
-            }.frame(width: 300) //.frame(maxWidth: SideListFixedWidth)
+            }.frame(minWidth: 300, minHeight: 200)
             Spacer()
 
             if let routeId = selection, let route = layout.route(for: routeId, trainId: nil) {

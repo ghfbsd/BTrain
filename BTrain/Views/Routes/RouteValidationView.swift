@@ -33,7 +33,7 @@ struct RouteValidationView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .center) {
             HStack {
                 Button("Verify") {
                     validateRoute()
@@ -50,7 +50,7 @@ struct RouteValidationView: View {
                 Text("\(resolvedRouteDescription)")
             }
         }
-        .frame(minWidth:(NSApp.keyWindow?.contentView?.bounds.width ?? 500) * 0.9)
+        .frame(minWidth: 700)
 
     }
 
