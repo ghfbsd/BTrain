@@ -17,7 +17,7 @@ struct MoveUpButtonView<T: Identifiable>: View {
     @Binding var elements: [T]
 
     var body: some View {
-        Button("􀄨") {
+        Button("⬆︎") {
             guard let index = elements.firstIndex(where: { $0.id == selection }) else {
                 return
             }
