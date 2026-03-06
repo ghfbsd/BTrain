@@ -14,7 +14,6 @@
 import Foundation
 
 final class MockCommandInterface: CommandInterface {
-    func connect(server: String, port: UInt16, layout: BTrain.Layout, onReady: @escaping BTrain.CompletionBlock, onError: @escaping (any Error) -> Void, onStop: @escaping BTrain.CompletionBlock) {}
     
     var callbacks = CommandInterfaceCallbacks()
 
@@ -36,7 +35,7 @@ final class MockCommandInterface: CommandInterface {
         executePendingCommands()
     }
 
-    //func connect(server _: String, port _: UInt16, onReady _: @escaping () -> Void, onError _: @escaping (Error) -> Void, onStop _: @escaping () -> Void) {}
+    func connect(server _: String, port _: UInt16, layout _: BTrain.Layout, onReady _: @escaping () -> Void, onError _: @escaping (Error) -> Void, onStop _: @escaping () -> Void) {}
 
     func disconnect(_: @escaping CompletionBlock) {}
 
@@ -90,7 +89,7 @@ final class MockCommandInterface: CommandInterface {
         case let .speed(address, decoderType, value, _, _):
             speedValues.append(value.value)
             for speedChangeCallback in callbacks.speedChanges.all {
-                speedChangeCallback(address, decoderType, value, true)
+                speedChangeCallback(address, decoderType, value, true /* ack */ )
             }
 
         case let .direction(address, decoderType, direction, _, _):
