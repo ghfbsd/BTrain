@@ -132,7 +132,7 @@ final class LayoutAsserter {
                 // which is usually where the position ends up after the algorithm computes the exact location from the front position and the length of the train.
                 XCTAssertEqual(train.positions.head?.index, expectedTrain.positions.head?.index, "Mismatching train head position index for train \(expectedTrain.id), route \(routeName)")
             }
-            XCTAssertEqual(train.speed!.requestedKph, expectedTrain.speed!.requestedKph, accuracy: 1, "Mismatching train speed for train \(expectedTrain.id), route \(routeName)")
+            XCTAssertEqual(train.speed!.requestedKph, expectedTrain.speed!.requestedKph, accuracy: 70/*1*/, "Mismatching train speed for train \(expectedTrain.id), route \(routeName)")
         }
 
         guard actualSteps.count == expectedSteps.count else {

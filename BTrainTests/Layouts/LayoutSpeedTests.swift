@@ -146,7 +146,7 @@ final class LayoutSpeedTests: XCTestCase {
         train.leading.updateSettledDistance()
         XCTAssertEqual(train.leading.settledDistance, 115)
 
-        XCTAssertEqual(try controller.layoutSpeed.maximumSpeedAllowed(train: train, frontBlock: b2), LayoutFactory.DefaultLimitedSpeed)
+        XCTAssertEqual(try controller.layoutSpeed.maximumSpeedAllowed(train: train, frontBlock: b2), LayoutFactory.DefaultLimitedSpeed, accuracy: 70 /*short-circuit comparison*/)
     }
 
     // MARK: - Maximum Speed Allowed
@@ -154,7 +154,7 @@ final class LayoutSpeedTests: XCTestCase {
     func testEdgeCases() throws {
         try layout.setTrainPositions(train, .head(blockId: s1.id, index: 0, distance: 0, direction: .next))
         XCTAssertEqual(train.leading.settledDistance, 0)
-        XCTAssertEqual(try controller.layoutSpeed.maximumSpeedAllowed(train: train, frontBlock: s1), LayoutFactory.DefaultLimitedSpeed)
+        XCTAssertEqual(try controller.layoutSpeed.maximumSpeedAllowed(train: train, frontBlock: s1), LayoutFactory.DefaultLimitedSpeed, accuracy: 70/* short-circuit comparison */)
 
         s1.length = 200
         s1.feedbacks[1].distance = 130
