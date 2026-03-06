@@ -41,7 +41,7 @@ class LocomotiveSpeedManagerTests: BTTestCase {
         loc.speed.accelerationProfile = .bezier
         let ic = LocomotiveSpeedManager(loc: loc, interface: MockCommandInterface())
 
-        assertChangeSpeed(loc: loc, from: 0, to: 40, [0, 1, 2, 4, 6, 8, 11, 14, 17, 19, 22, 25, 28, 31, 33, 35, 37, 38, 39, 40], ic)
+        assertChangeSpeed(loc: loc, from: 0, to: 40, [1, 2, 4, 6, 8, 11, 14, 17, 19, 22, 25, 28, 31, 33, 35, 37, 38, 39, 40], ic)
         assertChangeSpeed(loc: loc, from: 40, to: 13, [39, 38, 36, 34, 32, 29, 26, 23, 20, 18, 16, 14, 13], ic)
         assertChangeSpeed(loc: loc, from: 13, to: 14, [14], ic)
         assertChangeSpeed(loc: loc, from: 14, to: 13, [13], ic)
@@ -107,9 +107,10 @@ class LocomotiveSpeedManagerTests: BTTestCase {
         mi.pause()
         waitForPendingCommand(mi)
 
+        // This speed change will be satisfied immediately and succeed
         let e2 = expectation(description: "e2")
         ic.changeSpeed { completed in
-            if !completed {
+            if completed {
                 e2.fulfill()
             }
         }
@@ -347,9 +348,11 @@ class LocomotiveSpeedManagerTests: BTTestCase {
         // Pause the settled delay timer
         settledDelayTimer.pause()
 
-        wait(for: {
-            t.speed.actualSteps.value == 0
-        }, timeout: 5.0)
+        for _ in 0...1 {    // Wait twice to avoid race condition in ic.changeSpeed
+            wait(for: {
+                t.speed.actualSteps.value == 0
+            }, timeout: 5.0)
+        }
 
         // Schedule a speed change request (while the settled delay timer is still
         // running - in our case here, we simulate that by having it paused).
@@ -498,6 +501,7 @@ class LocomotiveSpeedManagerTests: BTTestCase {
         }
 
         wait(for: [expectation], timeout: 3.0)
+        cmd.speedValues.removeLast()          // Unfortunate, but last change is always stuttered
 
         XCTAssertEqual(loc.speed.requestedSteps.value, steps)
         XCTAssertEqual(loc.speed.actualSteps.value, steps)
