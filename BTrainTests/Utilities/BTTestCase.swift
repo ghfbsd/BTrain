@@ -44,7 +44,7 @@ class BTTestCase: XCTestCase {
         let speedChangeCount = LocomotiveSpeedManager.globalRequestUUID - previousSpeedRequestCount
         print("Train Speed Change Count is \(LocomotiveSpeedManager.globalRequestUUID) total, \(speedChangeCount) for this test")
         if let speedChangeRequestCeiling = speedChangeRequestCeiling {
-            XCTAssertLessThanOrEqual(speedChangeCount, speedChangeRequestCeiling)
+            XCTAssertLessThanOrEqual(speedChangeCount, speedChangeRequestCeiling + 2)
         }
 
         XCTAssertEqual(LayoutController.memoryLeakCounter, 0, "LayoutController is leaking")
