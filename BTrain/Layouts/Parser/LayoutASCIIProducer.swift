@@ -231,9 +231,9 @@ final class LayoutASCIIProducer {
                 return stringFrom(train)
             case .wagon:
                 if let tail = train.positions.tail, tail.index == position, tail.blockId == block.id {
-                    return "►\(train.id)"
+                    return "◼︎\(train.id)"
                 } else {
-                    return "►\(train.id)"
+                    return "◻︎\(train.id)"
                 }
             }
         } else {

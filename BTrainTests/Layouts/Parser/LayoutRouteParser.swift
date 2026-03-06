@@ -337,7 +337,7 @@ final class LayoutRouteParser {
         } else {
             direction = .next
         }
-        _ = sp.matches("􀼮")
+        _ = sp.matches("►")
 
         let allowedDirection: Locomotive.AllowedDirection
         if sp.matches("⟷") {
@@ -408,9 +408,9 @@ final class LayoutRouteParser {
     // 􀼰0
     func parseWagonAttributes() -> WagonAttributes? {
         let last: Bool
-        if sp.matches("􀼯") {
+        if sp.matches("◻︎") {
             last = false
-        } else if sp.matches("􀼰") {
+        } else if sp.matches("◼︎") {
             last = true
         } else {
             return nil

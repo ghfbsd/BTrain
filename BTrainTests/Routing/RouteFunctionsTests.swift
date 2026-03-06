@@ -31,12 +31,12 @@ final class RouteFunctionsTests: BTTestCase {
         XCTAssertEqual(p.digitalController.triggeredFunctions.count, 1)
         XCTAssertEqual(p.digitalController.triggeredFunctions, [.init(address: 6, index: 0, value: 1)])
 
-        try p.assert("0: |[r0[A ≏ 􀼰0 ≏ 🔵􀼮0 ]] <r0<AB>> [r0[B ≏ ≏ ]] [C ≏ ≏ ] [D ≏ ≏ ] <DE(1,0)> [E ≏ ≏ ]|")
-        try p.assert("0: |[r0[A ≏ 􀼰0 ≏ 􀼯0 ]] <r0<AB>> [r0[B 􀼯0 ≡ 🔵􀼮0 ≏ ]] [r0[C ≏ ≏ ]] [D ≏ ≏ ] <DE(1,0)> [E ≏ ≏ ]|")
-        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [r0[B 􀼰0 ≏ 􀼯0 ≏ 􀼯0 ]] [r0[C 􀼯0 ≡ 🔵􀼮0 ≏ ]] [r0[D ≏ ≏ ]] <DE{sl}(1,0),s> [E ≏ ≏ ]|")
-        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [r0[C 􀼰0 ≏ 􀼯0 ≏ 􀼯0 ]] [r0[D 􀼯0 ≡ 🟢􀼮0 ≏ ]] <r0<DE{sl}(1,0),s>> [r0[E ≏ ≏ ]]|")
-        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [C ≏ ≏ ] [r0[D 􀼰0 ≏ 􀼯0 ≏ 􀼯0 ]] <r0<DE{sl}(1,0),s>> [r0[E 􀼯0 ≡ 🟡􀼮0 ≏ ]]|")
-        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [C ≏ ≏ ] [D ≏ ≏ ] <DE{sl}(1,0),s> [r0[E ≏ 􀼰0 ≡ 🔴􀼮0 ]]|")
+        try p.assert("0: |[r0[A ≏ ◼︎0 ≏ 🔵►0 ]] <r0<AB>> [r0[B ≏ ≏ ]] [C ≏ ≏ ] [D ≏ ≏ ] <DE(1,0)> [E ≏ ≏ ]|")
+        try p.assert("0: |[r0[A ≏ ◼︎0 ≏ ◻︎0 ]] <r0<AB>> [r0[B ◻︎0 ≡ 🔵►0 ≏ ]] [r0[C ≏ ≏ ]] [D ≏ ≏ ] <DE(1,0)> [E ≏ ≏ ]|")
+        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [r0[B ◼︎0 ≏ ◻︎0 ≏ ◻︎0 ]] [r0[C ◻︎0 ≡ 🔵►0 ≏ ]] [r0[D ≏ ≏ ]] <DE{sl}(1,0),s> [E ≏ ≏ ]|")
+        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [r0[C ◼︎0 ≏ ◻︎0 ≏ ◻︎0 ]] [r0[D ◻︎0 ≡ 🟢►0 ≏ ]] <r0<DE{sl}(1,0),s>> [r0[E ≏ ≏ ]]|")
+        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [C ≏ ≏ ] [r0[D ◼︎0 ≏ ◻︎0 ≏ ◻︎0 ]] <r0<DE{sl}(1,0),s>> [r0[E ◻︎0 ≡ 🟡►0 ≏ ]]|")
+        try p.assert("0: |[A ≏ ≏ ] <AB{sr}(0,1),s> [B ≏ ≏ ] [C ≏ ≏ ] [D ≏ ≏ ] <DE{sl}(1,0),s> [r0[E ≏ ◼︎0 ≡ 🔴►0 ]]|")
 
         XCTAssertEqual(p.digitalController.triggeredFunctions.count, 2)
         XCTAssertEqual(p.digitalController.triggeredFunctions, [.init(address: 6, index: 0, value: 1), .init(address: 6, index: 0, value: 0)])

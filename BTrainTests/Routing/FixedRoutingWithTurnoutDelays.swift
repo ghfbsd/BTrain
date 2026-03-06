@@ -28,7 +28,7 @@ class FixedRoutingWithTurnoutDelays: BTTestCase {
         try p.prepare(routeID: "r1", trainID: "1", fromBlockId: "b1")
 
         // t0 has still the state .branchLeft instead of the requested .straight
-        try p.assert("r1: {r1{b1 🔴􀼮1 ≏ ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2)> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 🔴►1 ≏ ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2)> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ ≏ }}")
 
         // The train will switch to managed scheduling but does not start yet because the turnout t0 hasn't settled.
         try p.start(expectedState: .stopped)
@@ -41,26 +41,26 @@ class FixedRoutingWithTurnoutDelays: BTTestCase {
         // And the train will restart because the leading turnouts are settled
         XCTAssertEqual(p.train.state, .running)
 
-        try p.assert("r1: {r1{b1 ≏ ≡ 🔵􀼮1 }} <r1<t0>> [r1[b2 ≏ ≏ ]] <t1(0,2)> [b3 ≏ ≏ ] <r1<t0(2,0)>> !{r1{b1 ≡ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≡ 🔵►1 }} <r1<t0>> [r1[b2 ≏ ≏ ]] <t1(0,2)> [b3 ≏ ≏ ] <r1<t0(2,0)>> !{r1{b1 ≡ ≏ }}")
 
         // Pause again the turnout executor which will prevent the leading turnouts from settling
         p.digitalController.pause()
 
         // The train will stop because the leading turnouts are not yet fully settled
-        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≡ 🟡􀼮1 ≏ ]] <r1<t1(0,2),s>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
-        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≏ ≡ 🔴􀼮1 ]] <r1<t1(0,2),s>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
+        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≡ 🟡►1 ≏ ]] <r1<t1(0,2),s>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
+        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≏ ≡ 🔴►1 ]] <r1<t1(0,2),s>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
 
         // Resuming the executor which will settle the leading turnouts
         p.digitalController.resume()
 
         // The train restarts because all the turnouts have settled
-        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≏ ≏ 🔵􀼮1 ]] <r1<t1(0,2),l>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≡ 🔵􀼮1 ≏ ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≏ 🔵􀼮1 ≏ ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≏ ≡ 🔵􀼮1 ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ 🟡!􀼮1 ≡ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≡ 🟡􀼮1 ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ 🟡!􀼮1 ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ 🟡􀼮1 ≏ }}")
-        try p.assert("r1: {r1{b1 🔴!􀼮1 ≡ ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ ≡ 🔴􀼮1 }}")
+        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ≏ ≏ 🔵►1 ]] <r1<t1(0,2),l>> [r1[b3 ≏ ≏ ]] <t0(2,0)> !{b1 ≏ ≏ }")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≡ 🔵►1 ≏ ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≏ 🔵►1 ≏ ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <r1<t0,l>> [b2 ≏ ≏ ] <t1(0,2),l> [r1[b3 ≏ ≡ 🔵►1 ]] <r1<t0(2,0),l>> !{r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ 🟡!►1 ≡ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≡ 🟡►1 ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ 🟡!►1 ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ 🟡►1 ≏ }}")
+        try p.assert("r1: {r1{b1 🔴!►1 ≡ ≏ }} <t0,l> [b2 ≏ ≏ ] <t1(0,2),l> [b3 ≏ ≏ ] <t0(2,0),l> !{r1{b1 ≏ ≡ 🔴►1 }}")
     }
 
     func testLeadingSettledDistance() throws {
@@ -75,20 +75,20 @@ class FixedRoutingWithTurnoutDelays: BTTestCase {
 
         p.train.maxNumberOfLeadingReservedBlocks = 2
 
-        try p.assert("r1: {r1{b1 ≏ 􀼰1 ≏ 🔴􀼮1 }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1,r> [b4 ≏ ≏] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ◼︎1 ≏ 🔴►1 }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1,r> [b4 ≏ ≏] {r1{b1 ≏ ≏ }}")
 
         try p.start()
 
-        try p.assert("r1: {r1{b1 ≏ 􀼰1 ≏ 🟢􀼮1 }} <r1<t0>> [r1[b2 ≏ ≏ ]] [r1[b3 ≏ ≏ ]] <t1,r> [b4 ≏ ≏] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ◼︎1 ≏ 🟢►1 }} <r1<t0>> [r1[b2 ≏ ≏ ]] [r1[b3 ≏ ≏ ]] <t1,r> [b4 ≏ ≏] {r1{b1 ≏ ≏ }}")
         XCTAssertEqual(p.train.state, .running)
 
         p.digitalController.pause()
 
         // Train is now braking because not enough leading settled distance
-        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 􀼰1 ≡ 🟡􀼮1 ≏ ]] [r1[b3 ≏ ≏ ]] <r1<t1,r>> [r1[b4 ≏ ≏]] {b1 ≏ ≏ }")
+        try p.assert("r1: {b1 ≏ ≏ } <t0> [r1[b2 ◼︎1 ≡ 🟡►1 ≏ ]] [r1[b3 ≏ ≏ ]] <r1<t1,r>> [r1[b4 ≏ ≏]] {b1 ≏ ≏ }")
         XCTAssertEqual(p.train.state, .braking)
 
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 􀼰1 ≡ 🟡􀼮1 ≏ ]] <r1<t1,r>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 ◼︎1 ≡ 🟡►1 ≏ ]] <r1<t1,r>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
         XCTAssertEqual(p.train.state, .braking)
 
         p.digitalController.resume()
@@ -97,11 +97,11 @@ class FixedRoutingWithTurnoutDelays: BTTestCase {
         // And the train will restart because the leading turnouts are settled
         XCTAssertEqual(p.train.state, .running)
 
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 􀼰1 ≡ 🟢􀼮1 ≏ ]] <r1<t1>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 ≏ 􀼰1 ≡ 🟢􀼮1 ]] <r1<t1>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [r1[b4 􀼰1 ≡ 🔵􀼮1 ≏]] {r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [r1[b4 ≏ 􀼰1 ≡ 🔵􀼮1]] {r1{b1 ≏ ≏ }}")
-        try p.assert("r1: {r1{b1 􀼰1 ≡ 🟡􀼮1 ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [b4 ≏ ≏ ] {r1{b1 􀼰1 ≡ 🟡􀼮1 ≏ }}")
-        try p.assert("r1: {r1{b1 ≏ 􀼰1 ≡ 🔴􀼮1 }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [b4 ≏ ≏ ] {r1{b1 ≏ 􀼰1 ≡ 🔴􀼮1 }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 ◼︎1 ≡ 🟢►1 ≏ ]] <r1<t1>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [r1[b3 ≏ ◼︎1 ≡ 🟢►1 ]] <r1<t1>> [r1[b4 ≏ ≏]] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [r1[b4 ◼︎1 ≡ 🔵►1 ≏]] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [r1[b4 ≏ ◼︎1 ≡ 🔵►1]] {r1{b1 ≏ ≏ }}")
+        try p.assert("r1: {r1{b1 ◼︎1 ≡ 🟡►1 ≏ }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [b4 ≏ ≏ ] {r1{b1 ◼︎1 ≡ 🟡►1 ≏ }}")
+        try p.assert("r1: {r1{b1 ≏ ◼︎1 ≡ 🔴►1 }} <t0> [b2 ≏ ≏ ] [b3 ≏ ≏ ] <t1> [b4 ≏ ≏ ] {r1{b1 ≏ ◼︎1 ≡ 🔴►1 }}")
     }
 }
