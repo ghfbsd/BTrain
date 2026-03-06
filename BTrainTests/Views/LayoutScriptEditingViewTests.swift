@@ -34,7 +34,7 @@ final class LayoutScriptEditingViewTests: XCTestCase {
         let deleteButton = try sut.inspect().find(button: "-")
         XCTAssertTrue(deleteButton.isDisabled())
 
-        let duplicateButton = try sut.inspect().find(button: "􀐅")
+        let duplicateButton = try sut.inspect().find(button: "⧉")
         XCTAssertTrue(duplicateButton.isDisabled())
     }
 }

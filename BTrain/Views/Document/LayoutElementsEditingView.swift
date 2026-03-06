@@ -126,7 +126,7 @@ struct LayoutElementsEditingView<E: LayoutElement, More: View, Row: View, Editor
 
                 Spacer().fixedSpace()
 
-                Button("Undo") {
+                Button("⧉") {
                     if let selection = selection, let element = elementContainer[selection] {
                         let newElement = elementContainer.add(duplicate(element))
                         undoManager?.registerUndo(withTarget: layout, handler: { _ in
