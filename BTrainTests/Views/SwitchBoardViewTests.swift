@@ -31,7 +31,7 @@ class SwitchBoardViewTests: XCTestCase {
         let coordinator = LayoutController(layout: layout, switchboard: switchboard, interface: MarklinInterface(), functionCatalog: nil)
         let v = SwitchBoardView(switchboard: switchboard, containerSize: switchboard.idealSize, state: switchboard.state, layout: layout, layoutController: coordinator, gestureEnabled: true)
 
-        let canvas = try v.inspect().view(Canvas<SwitchBoardView>.self)
+        let canvas = try v.inspect().canvas<SwitchBoardView>()
 
         let gesture = try canvas.gesture(DragGesture.self)
         try gesture.callOnChanged(value: DragGesture.Value(time: Date(), location: .zero, startLocation: .zero, velocity: .zero))
@@ -47,11 +47,11 @@ class SwitchBoardViewTests: XCTestCase {
 
         state.editing = false
 
-        XCTAssertThrowsError(_ = try sut.inspect().find(button: "􀅼 Block"))
+        XCTAssertThrowsError(_ = try sut.inspect().find(button: "≣ Block"))
 
         state.editing = true
 
-        _ = try sut.inspect().find(button: "􀅼 Block")
+        _ = try sut.inspect().find(button: "≣ Block")
     }
 
     func testNewBlockSheet() throws {

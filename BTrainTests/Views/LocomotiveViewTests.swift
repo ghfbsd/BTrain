@@ -44,7 +44,7 @@ class LocomotiveViewTests: RootViewTests {
 
     func testSpeedColumnView() throws {
         let sut = LocomotiveSpeedTableView(selection: .constant([]), currentSpeedEntry: .constant(nil), trainSpeed: LocomotiveSpeed(kph: 0, decoderType: .MFX))
-        _ = try sut.inspect().find(button: "􁂥")
+        _ = try sut.inspect().find(button: "…")
     }
 
     func testSpeedTimingFunctionView() throws {

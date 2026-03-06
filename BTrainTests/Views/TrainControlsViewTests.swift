@@ -80,7 +80,7 @@ class TrainControlsViewTests: RootViewTests {
     func testActions() throws {
         let doc = newDocument()
         let sut = TrainControlActionsView(document: doc, layout: doc.layout, filterRunningTrains: .constant(true))
-        _ = try sut.inspect().find(button: "􀊋 Start All")
+        _ = try sut.inspect().find(button: "Start All")
     }
 
     func testSetLocationSheet() throws {
@@ -93,6 +93,6 @@ class TrainControlsViewTests: RootViewTests {
         let doc = newDocument()
         let train = doc.layout.trains[0]
         let sut = TrainControlStateView(train: train, trainRuntimeError: .constant("Error!"))
-        _ = try sut.inspect().find(button: "􀇾")
+        _ = try sut.inspect().find(button: "⁇")
     }
 }
