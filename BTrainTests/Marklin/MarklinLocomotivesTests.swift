@@ -21,6 +21,7 @@ final class MarklinLocomotivesTests: XCTestCase {
     func testCS3FetchLocomotives() async throws {
         let cs3 = MarklinCS3()
         let locks = try await cs3.fetchLoks(server: server)
+        XCTExpectFailure("Relies on JB's CS3 for testing!")
         XCTAssertEqual(locks.count, 18)
 
         if locks.count > 0 {
@@ -55,6 +56,7 @@ final class MarklinLocomotivesTests: XCTestCase {
             return
         }
 
+        XCTExpectFailure("Relies on JB's CS3 for testing!")
         XCTAssertEqual(locs.count, 18)
 
         if locs.count > 0 {
