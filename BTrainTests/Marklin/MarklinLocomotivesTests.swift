@@ -23,16 +23,18 @@ final class MarklinLocomotivesTests: XCTestCase {
         let locks = try await cs3.fetchLoks(server: server)
         XCTAssertEqual(locks.count, 18)
 
-        let l1 = locks[0]
-        XCTAssertEqual(l1.name, "193 524 SBB")
-        XCTAssertEqual(l1.address, 14)
-        XCTAssertEqual(l1.decoderType, .MFX)
-        XCTAssertEqual(l1.icon, "/usr/local/cs3/lokicons/SBB 193 524-6 Cargo")
-        XCTAssertEqual(l1.funktionen.count, 32)
-        XCTAssertEqual(l1.funktionen[0].typ2, 1)
-
-        let icon = try await cs3.fetchLokIcon(server: server, lok: l1)
-        XCTAssertNotNil(icon)
+        if locks.count > 0 {
+            let l1 = locks[0]
+            XCTAssertEqual(l1.name, "193 524 SBB")
+            XCTAssertEqual(l1.address, 14)
+            XCTAssertEqual(l1.decoderType, .MFX)
+            XCTAssertEqual(l1.icon, "/usr/local/cs3/lokicons/SBB 193 524-6 Cargo")
+            XCTAssertEqual(l1.funktionen.count, 32)
+            XCTAssertEqual(l1.funktionen[0].typ2, 1)
+            
+            let icon = try await cs3.fetchLokIcon(server: server, lok: l1)
+            XCTAssertNotNil(icon)
+        }
     }
 
     func testFetchLocomotives() throws {
@@ -55,10 +57,12 @@ final class MarklinLocomotivesTests: XCTestCase {
 
         XCTAssertEqual(locs.count, 18)
 
-        let l1 = locs[0]
-        XCTAssertEqual(l1.name, "193 524 SBB")
-        XCTAssertEqual(l1.address, 14)
-        XCTAssertEqual(l1.decoderType, .MFX)
-        XCTAssertNotNil(l1.icon)
+        if locs.count > 0 {
+            let l1 = locs[0]
+            XCTAssertEqual(l1.name, "193 524 SBB")
+            XCTAssertEqual(l1.address, 14)
+            XCTAssertEqual(l1.decoderType, .MFX)
+            XCTAssertNotNil(l1.icon)
+        }
     }
 }

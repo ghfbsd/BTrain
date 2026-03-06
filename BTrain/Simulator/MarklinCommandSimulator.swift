@@ -189,7 +189,9 @@ final class MarklinCommandSimulator: Simulator, ObservableObject {
     }
 
     func start(_ port: UInt16 = 8080) {
-        try? cs3Server.start(port)        // why need to start CS3 to start simulator?
+        if MarklinCS3().CS3 == .CS3  {
+            try? cs3Server.start(port)        // why need to start CS3 to start simulator?
+        }
 
         server = Server(port: localPort)
         server!.didAcceptConnection = { [weak self] connection in
