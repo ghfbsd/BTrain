@@ -130,6 +130,9 @@ final class LocomotiveSpeedManager {
                 // Note: the next time the timer fires, the command
                 // will be actually cancelled and the next command processed.
                 command.status = .cancelled
+                command.isProcessedByDigitalController = false
+                command.running = false
+                processCommands()
             }
         }
     }
@@ -193,7 +196,7 @@ final class LocomotiveSpeedManager {
 
         let value = interface.speedValue(for: steps, decoder: loc.decoder)
         let speedKph = loc.speed.speedKph(for: steps)
-        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public) TIMED OUT \(String(format: "%.0f ms", arguments: [self.stepDelay * 1000]))")
+        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public) TIMER \(String(format: "%.0f ms", arguments: [self.stepDelay * 1000]))")
 
         assert(command.isProcessedByDigitalController == false)
         command.isProcessedByDigitalController = true
@@ -249,14 +252,10 @@ final class LocomotiveSpeedManager {
             var time = stepDelay
             while true {
                 let (value, done) = stepValue(value: tf.stepValue(at: time), accelerating: delta > 0, desired: desired)
+                commands.append(value)
                 if done {
-                    commands.append(value)
-                    if tf.acceleration == .bezier {   // Bezier curve can return duplicate values
-                        commands = commands.uniqued()
-                    }
-                    return commands
-                } else {
-                    commands.append(value)
+                    // Bezier can return duplicated values in the sequence
+                    return tf.acceleration == .bezier ? commands.uniqued() : commands
                 }
                 time += stepDelay
             }
