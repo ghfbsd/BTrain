@@ -140,12 +140,18 @@ class CommandInterfaceTests: XCTestCase {
 
         let completionExpectation = XCTestExpectation()
         connectToSimulator(doc: doc)
+        
+        let JBsCS3 = MarklinCS3().CS3 == .CS3
 
         let e = expectation(description: "callback")
         doc.interface.callbacks.register { result in
             switch result {
             case let .success(locomotives):
-                XCTAssertFalse(locomotives.isEmpty)
+                if JBsCS3 {
+                    XCTAssertFalse(locomotives.isEmpty)
+                } else {
+                    XCTAssertTrue(locomotives.isEmpty)
+                }
             case .failure:
                 XCTFail()
             }
@@ -162,10 +168,10 @@ class CommandInterfaceTests: XCTestCase {
             disconnectFromSimulator(doc: doc)
         }
 
-        XCTAssertEqual(doc.layout.locomotives.elements.count, 18)
+        XCTAssertEqual(doc.layout.locomotives.elements.count, JBsCS3 ? 18 : 0)
 
         guard doc.layout.locomotives.elements.count > 0 else {
-            XCTFail("Must be at least one loco")
+            if JBsCS3 { XCTFail("Must be at least one loco") }
             return
         }
         
