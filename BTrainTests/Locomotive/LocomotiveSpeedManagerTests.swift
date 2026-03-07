@@ -501,7 +501,6 @@ class LocomotiveSpeedManagerTests: BTTestCase {
         }
 
         wait(for: [expectation], timeout: 3.0)
-        cmd.speedValues.removeLast()          // Unfortunate, but last change is always stuttered
 
         XCTAssertEqual(loc.speed.requestedSteps.value, steps)
         XCTAssertEqual(loc.speed.actualSteps.value, steps)

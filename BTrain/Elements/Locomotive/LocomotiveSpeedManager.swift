@@ -196,7 +196,12 @@ final class LocomotiveSpeedManager {
 
         let value = interface.speedValue(for: steps, decoder: loc.decoder)
         let speedKph = loc.speed.speedKph(for: steps)
-        BTLogger.speed.debug("\(self.loc.name, privacy: .public): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status, privacy: .public) TIMER \(String(format: "%.0f ms", arguments: [self.stepDelay * 1000]))")
+        BTLogger.speed.debug("\(self.loc.name): {\(command.requestUUID)} ☄︎ speed command for \(speedKph) kph (value=\(value), \(steps)), requested \(command.requestedKph) kph, status: \(command.status) TIMER \(String(format: "%.0f ms", arguments: [self.stepDelay * 1000]))")
+        
+        if command.status == .finished {
+            speedCommandCompleted(command: command)
+            return
+        }
 
         assert(command.isProcessedByDigitalController == false)
         command.isProcessedByDigitalController = true
