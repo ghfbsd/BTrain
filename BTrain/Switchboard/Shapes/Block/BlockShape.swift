@@ -210,8 +210,9 @@ final class BlockShape: Shape, DraggableShape, ConnectableShape {
     }
 
     private func drawFeedbacks(ctx: CGContext) {
-        for (index, feedback) in block.feedbacks.enumerated() {
-            if let f = layout?.feedbacks[feedback.feedbackId], f.detected {
+        let fbseq = block.feedbacks.sorted(by: { $0.distance ?? 0 < $1.distance ?? 0 })
+        for (index, _) in block.feedbacks.enumerated() {
+            if let f = layout?.feedbacks[fbseq[index].feedbackId], f.detected {
                 ctx.setFillColor(shapeContext.activeFeedbackColor)
             } else {
                 ctx.setFillColor(shapeContext.inactiveFeedbackColor)
@@ -225,13 +226,13 @@ final class BlockShape: Shape, DraggableShape, ConnectableShape {
             ctx.setStrokeColor(shapeContext.pathColor(reserved != nil, train: block.trainInstance != nil))
             ctx.strokePath()
 
-            if let feedbackIds = shapeContext.expectedFeedbackIds, feedbackIds.contains(feedback.feedbackId) {
+            if let feedbackIds = shapeContext.expectedFeedbackIds, feedbackIds.contains(fbseq[index].feedbackId) {
                 let path = expectedFeedbackPath(at: index)
                 ctx.addPath(path)
                 ctx.strokePath()
             }
 
-            if let feedbackIds = shapeContext.unexpectedFeedbackIds, feedbackIds.contains(feedback.feedbackId) {
+            if let feedbackIds = shapeContext.unexpectedFeedbackIds, feedbackIds.contains(fbseq[index].feedbackId) {
                 let path = unexpectedFeedbackPath(at: index)
                 ctx.addPath(path)
                 ctx.setFillColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5)
