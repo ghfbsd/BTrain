@@ -282,7 +282,8 @@ final class LayoutController: ObservableObject, LayoutControlling {
         interface.execute(command: .stop(), completion: onCompletion)
     }
 
-    func startAll() {
+    func startAll() throws {
+        try layout.isRunnable()
         for train in layout.trainsThatCanBeStarted() {
             do {
                 try start(routeID: train.routeId, trainID: train.id, destination: nil)
@@ -339,7 +340,8 @@ final class LayoutController: ObservableObject, LayoutControlling {
 
     // MARK: Layout Scripts
 
-    func schedule(scriptId: Identifier<LayoutScript>) {
+    func schedule(scriptId: Identifier<LayoutScript>) throws {
+        try layout.isRunnable()
         conductor.schedule(scriptId)
         runControllers(.scriptScheduled)
     }
@@ -488,6 +490,7 @@ extension LayoutController {
     }
 
     func start(routeID: Identifier<Route>, trainID: Identifier<Train>, destination: Destination? = nil) throws {
+        try layout.isRunnable()
         guard let train = layout.trains[trainID] else {
             throw LayoutError.trainNotFound(trainId: trainID)
         }

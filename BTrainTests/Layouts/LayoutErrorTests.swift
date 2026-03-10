@@ -65,13 +65,13 @@ class LayoutErrorTests: XCTestCase {
         }
     }
 
-    func testRouteNotFound() {
+    func testRunnable() {
         do {
             let doc = LayoutDocument(layout: layout)
             try doc.start(trainId: train0.id, withRoute: Identifier<Route>(uuid: "foo"), destination: nil)
             XCTFail("Must throw an exception")
         } catch {
-            XCTAssertEqual(error.localizedDescription, "Route foo not found")
+            XCTAssertEqual(error.localizedDescription, "Feedback f11 distance not set")
         }
     }
 }

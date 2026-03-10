@@ -30,8 +30,8 @@ extension LayoutDocument {
         try layoutController.start(routeID: route, trainID: trainId, destination: destination)
     }
 
-    func startAll() {
-        layoutController.startAll()
+    func startAll() throws {
+        try layoutController.startAll()
     }
 
     func stop(train: Train) {

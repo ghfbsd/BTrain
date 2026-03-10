@@ -135,4 +135,80 @@ class LayoutTests: BTTestCase {
         let f = try layout.entryFeedback(from: b1, to: b2)
         XCTAssertNil(f)
     }
+    
+    func testFeedbackOutOfOrder() throws {
+        let layout = Layout()
+        let b1 = layout.newBlock(name: "b1", category: .free)
+
+        let f1 = layout.newFeedback()
+        let f2 = layout.newFeedback()
+        layout.assign(b1, [f1,f2])
+        XCTAssertEqual(b1.feedbacks.count, 2)
+        
+        b1.length = 100
+        b1.feedbacks[0].distance = 70
+        b1.feedbacks[1].distance = 30
+        
+        let l1 = Locomotive()
+        let t1 = layout.trains.add(Train(uuid: "t1", name: "t1"))
+        t1.locomotive = l1
+
+        try layout.setTrainPositions(t1, .both(blockId: b1.id, headIndex: 2, headDistance: 20, tailIndex: 0, tailDistance: 0, direction: .next))
+        XCTAssertEqual(t1.frontBlockId, b1.id)
+        
+        layout.automaticRouteRandom = true
+        do {
+            let doc = LayoutDocument(layout: layout)
+            try doc.start(trainId: t1.id, withRoute: Identifier<Route>(uuid: "foo"), destination: nil)
+            XCTFail("Must throw an exception")
+        } catch {
+            XCTAssertEqual(error.localizedDescription, "Block b1 has feedback positions that are out of distance order")
+        }
+    }
+    
+    func testFeedbackDistanceNotDefined() throws {
+        let layout = Layout()
+        let b1 = layout.newBlock(name: "b1", category: .free)
+
+        let f1 = layout.newFeedback()
+        let f2 = layout.newFeedback()
+        layout.assign(b1, [f1,f2])
+        XCTAssertEqual(b1.feedbacks.count, 2)
+        
+        b1.length = 100
+        b1.feedbacks[0].distance = 70
+        //b1.feedbacks[1].distance = 30
+        
+        let l1 = Locomotive()
+        let t1 = layout.trains.add(Train(uuid: "t1", name: "t1"))
+        t1.locomotive = l1
+
+        do {
+            try layout.setTrainPositions(t1, .both(blockId: b1.id, headIndex: 2, headDistance: 20, tailIndex: 0, tailDistance: 0, direction: .next))
+            XCTFail("Must throw an exception")
+        } catch {
+            XCTAssertEqual(error.localizedDescription, "Feedback f2 distance not set")
+        }
+    }
+    
+    func testFeedbackNoFeedbacksDefined() throws {
+        let layout = Layout()
+        let b1 = layout.newBlock(name: "b1", category: .station)
+        b1.length = 100
+        
+        let l1 = Locomotive()
+        let t1 = layout.trains.add(Train(uuid: "t1", name: "t1"))
+        t1.locomotive = l1
+
+        try layout.setTrainPositions(t1, .both(blockId: b1.id, headIndex: 2, headDistance: 20, tailIndex: 0, tailDistance: 0, direction: .next))
+        
+        layout.automaticRouteRandom = true
+        do {
+            let doc = LayoutDocument(layout: layout)
+            try doc.start(trainId: t1.id, withRoute: Identifier<Route>(uuid: "foo"), destination: nil)
+            XCTFail("Must throw an exception")
+        } catch {
+            XCTAssertEqual(error.localizedDescription, "Block b1 contains no feedback")
+        }
+    }
 }

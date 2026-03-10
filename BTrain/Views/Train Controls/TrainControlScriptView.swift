@@ -34,7 +34,11 @@ struct TrainControlScriptView: View {
             Spacer().fixedSpace()
 
             Button("§ Start") {
-                document.layoutController.schedule(scriptId: selectedLayoutScript!)
+                do {
+                    try document.layoutController.schedule(scriptId: selectedLayoutScript!)
+                } catch(let error) {
+                    document.layout.alert = "Can't start: " + error.localizedDescription
+                }
             }.disabled(selectedLayoutScript == nil || document.layoutController.isRunning(scriptId: selectedLayoutScript))
 
             Spacer().fixedSpace()

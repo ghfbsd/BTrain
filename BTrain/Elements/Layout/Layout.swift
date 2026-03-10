@@ -127,6 +127,40 @@ final class Layout: Element, ObservableObject {
             train.scheduling == .managed
         }
     }
+    
+    // Invoked just before automatic operation of any train starts.
+    // Checks whether all feedback distances are set (required) and then does
+    // a check that the feedback distances in the block correspond to their
+    // sequence in the list of feedbacks in each block.  This latter check is
+    // required because in many cases the code assumes that the distance sequence
+    // is the same as the list sequence; as those code changes get made, the
+    // need for the check can be re-evaluated.
+    func isRunnable() throws {
+        var fbcnt = 0
+        for block in blocks.elements {
+            // Checks whether feedbacks defined for block types that require them
+            if block.feedbacks.isEmpty && [.station, .sidingNext, .sidingPrevious].contains( block.category ) {
+                throw LayoutError.blockContainsNoFeedback(block: block)
+            }
+            // Checks whether distances are defined
+            for feedback in block.feedbacks {
+                if feedback.distance == nil || !feedback.distance!.isFinite {
+                    throw LayoutError.feedbackDistanceNotSet(feedback: feedback)
+                }
+                fbcnt += 1
+            }
+            // Checks whether list order equals distance order
+            let fbseq = block.feedbacks.sorted(by: { $0.distance! < $1.distance! })
+            for (i, fb) in block.feedbacks.enumerated() {
+                if fb != fbseq[i] {
+                    throw LayoutError.feedbackSequenceJumbled(block: block)
+                }
+            }
+        }
+        if fbcnt == 0 {
+            throw LayoutError.noPossibleRoute(train: nil)
+        }
+    }
 }
 
 // MARK: Codable

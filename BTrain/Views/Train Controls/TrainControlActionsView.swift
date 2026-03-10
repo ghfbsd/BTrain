@@ -21,7 +21,9 @@ struct TrainControlActionsView: View {
     var body: some View {
         HStack {
             Button("Start All") {
-                document.startAll()
+                do { try document.startAll() } catch(let error) {
+                    document.layout.alert = "Can't start: " +  error.localizedDescription
+                }
             }.disabled(!document.trainsThatCanBeStarted || !document.power)
 
             Spacer().fixedSpace()

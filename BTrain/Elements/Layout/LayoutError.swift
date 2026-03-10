@@ -38,6 +38,7 @@ enum LayoutError: Error {
     case feedbackNotFoundInBlock(feedbackId: Identifier<Feedback>, block: Block)
     case blockContainsNoFeedback(block: Block)
     case feedbackDistanceNotSet(feedback: Block.BlockFeedback)
+    case feedbackSequenceJumbled(block: Block)
 
     case headPositionNotSpecified(position: TrainPositions)
     case tailPositionNotSpecified(position: TrainPositions)
@@ -66,7 +67,7 @@ enum LayoutError: Error {
     case cannotChangeRouteWhileTrainIsRunning(train: Train, route: Route)
 
     case routeNotFound(routeId: Identifier<Route>)
-    case noPossibleRoute(train: Train)
+    case noPossibleRoute(train: Train?)
     case routeIsNotAutomatic(route: Route)
 
     case destinationBlockMismatch(currentBlock: Block, destination: Destination)
@@ -102,6 +103,8 @@ extension LayoutError: LocalizedError {
             return "Block \(block.name) contains no feedback"
         case let .blockLengthNotDefined(block: block):
             return "Block \(block.name) does not have its length defined"
+        case let .feedbackSequenceJumbled(block: block):
+            return "Block \(block.name) has feedback positions that are out of distance order"
 
         case let .feedbackDistanceNotSet(feedback: feedback):
             return "Feedback \(feedback.feedbackId) distance not set"
@@ -160,7 +163,7 @@ extension LayoutError: LocalizedError {
         case let .routeNotFound(routeId: routeId):
             return "Route \(routeId) not found"
         case let .noPossibleRoute(train: train):
-            return "No automatic route found for \(train.name)"
+            return "No automatic route found for \(train?.name ?? "any train")"
         case let .routeIsNotAutomatic(route: route):
             return "The route \(route.name) is not automatic"
 
