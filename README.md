@@ -62,7 +62,8 @@ BTrain defines several routes:
 Either
 
 - Marklin Central Station 3 (CS3); or
-- Marklin 60116 Gleisbox (optionally with a Mobile Station 2 (MS2)) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway)
+- Marklin 60116 Gleisbox (optionally with a Mobile Station 2 (MS2)) [with a TCP-CAN hub](https://github.com/ghfbsd/pico_rocrail_can_tcp_gateway), [Stummi's Gleisbox als Zentrale](https://www.stummiforum.de/t160368f7-Gleisbox-als-Zentrale.html), or
+a [Locoduino Gleisbox Centrale](https://www.locoduino.org/spip.php?article361)
 
 **Features**
 
@@ -89,7 +90,7 @@ Either
 - Turnout: an element that guides a train from one rail to another
 - Feedback: an element that indicates when a train is present or not
 - Transition: any stretch of track between a block and turnout (and any combination of); has no physical length by definition
-- Route: a series of blocks that a train follows
+- Route: a series of blocks that a train follows from a starting point to a destination
 - Train: a locomotive and collection of wagons (each of which has a length)
 
 **Download pre-built app**
