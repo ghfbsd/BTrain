@@ -71,7 +71,7 @@ final class TrainFunctionsController {
     private func executeSingle(locomotive: Locomotive, function: CommandLocomotiveFunction, trigger: RouteItemFunction.Trigger) {
         let initialValue = trigger == .disable ? 0 : 1
         interface.execute(command: .function(address: locomotive.address, decoderType: locomotive.decoder, index: function.nr, value: UInt8(initialValue)), completion: {
-            self.active -= function.toggle ? 0 : 1
+            self.active -= function.toggle ? 0 : self.active > 0 ? 1 : 0
         })
 
         if function.toggle {
