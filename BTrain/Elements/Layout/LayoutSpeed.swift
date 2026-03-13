@@ -161,6 +161,27 @@ struct LayoutSpeed {
     ///   - distance: the distance available to change the train speed
     /// - Returns: the maximum speed to brake within the distance
     private func maximumSpeedToBrake(train: Train, toSpeed speed: SpeedKph, withDistance distance: Double) throws -> SpeedKph {
+        // If there is 3-feedback block, with separate brake and stop feedbacks, allow the train to maintain
+        // a speed that will let it get to braking speed in the interval between the brake & stop points.
+        let run = try? layout.isTrainLocatedAfterFeedback(train: train, type: .brake)
+        //BTLogger.debug("max speed: past brake? \(run == nil ? "no brake" : String(run!))")
+        let block = layout.blocks[train.frontBlockId]!, dir = block.trainInstance!.direction
+        if run != nil && run! == false,                 // Not yet at brake feedback
+            let bid = block.brakeFeedback(for: dir),    // Have a brake feedback
+            let sid = block.stopFeedback(for: dir) {    // Have a stop feedback
+            let bfb = block.feedbacks.first(where: {$0.feedbackId == bid})!,
+                sfb = block.feedbacks.first(where: {$0.feedbackId == sid})!
+            let interval = abs(bfb.distance! - sfb.distance!)
+            var brakingDistance = DistanceChangeResult(distance: 0, duration: 0)
+            for maxSpeed in [LayoutFactory.DefaultMaximumSpeed, LayoutFactory.DefaultLimitedSpeed] {
+                brakingDistance = try distanceNeededToChangeSpeed(ofTrain: train, fromSpeed: maxSpeed, toSpeed: LayoutFactory.DefaultBrakingSpeed)
+                if brakingDistance.distance <= interval {
+                    //BTLogger.debug("max speed: distance \(brakingDistance.distance) <= \(interval), speed \(maxSpeed)")
+                    return maxSpeed
+                }
+            }
+        }
+        
         let maxSpeeds = [LayoutFactory.DefaultMaximumSpeed, LayoutFactory.DefaultLimitedSpeed, LayoutFactory.DefaultBrakingSpeed]
         var brakingDistance = DistanceChangeResult(distance: 0, duration: 0)
         for maxSpeed in maxSpeeds {
