@@ -31,7 +31,7 @@ import Foundation
  │  B5   │──│  B4   │──║  B3   ║──║  B2   ║──┃ | B1  ┃──┃  B0   ┃
  └───────┘  └───────┘  ╚═══════╝  ╚═══════╝  ┗━━━━━━━┛  ┗━━━━━━━┛
 
-      Free Blocks        Occupied Blocks        Heading Blocks
+      Free Blocks        Occupied Blocks        Leading Blocks
 
                     Train (Locomotive + 2 cars)
 
@@ -43,7 +43,7 @@ import Foundation
  ┃  B5   ┃──┃  B4   ┃──║ B3 |  ║──║  B2   ║──│  B1   │──│  B0   │
  ┗━━━━━━━┛  ┗━━━━━━━┛  ╚═══════╝  ╚═══════╝  └───────┘  └───────┘
 
-    Heading Blocks       Occupied Blocks       Free Blocks
+    Leading Blocks       Occupied Blocks       Free Blocks
   ````
  */
 final class LayoutReservation {
