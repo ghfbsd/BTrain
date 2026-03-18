@@ -29,6 +29,26 @@ final class SwitchBoardRenderer {
         self.provider = provider
         self.shapeContext = shapeContext
     }
+    
+    func feedbackHints(layout: Layout, context: CGContext) -> [String:CGRect] {
+        // Returns a dict of rects surrounding each feedback on the visible part of the
+        // switchboard map keyed on the feedback name in the layout; enables display of
+        // name on mouse hovering over the feedback on the map
+        let visibleBlocks = provider.shapes.filter(\.visible).compactMap { $0 as? BlockShape }
+        var rects: [String:CGRect] = [:]
+        for shape in visibleBlocks {
+            context.with {
+                for (index, _) in shape.block.feedbacks.enumerated() {
+                    let path = shape.feedbackPath(at: index)
+                    let fdbk = layout.feedbacks.elements.first(where: {$0.id == shape.block.feedbacks[index].feedbackId} )
+                    let name = fdbk == nil ? "?" : fdbk!.name
+                    rects[name] = path.boundingBox
+                }
+            }
+        }
+        return rects
+    }
+
 
     func draw(context: CGContext) {
         let visibleShapes = provider.shapes.filter(\.visible)

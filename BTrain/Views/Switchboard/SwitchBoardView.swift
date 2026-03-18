@@ -36,6 +36,10 @@ struct SwitchBoardView: View {
     @AppStorage(SettingsKeys.fontSize) var fontSize = 12.0
 
     @Environment(\.undoManager) var undoManager
+    
+    @State private var hints: [String:CGRect] = [:]
+    @State private var fbhint = ""
+    @State private var fbpos = CGPoint(x:0,y:0)
 
     // Note: we pass `redraw` and `coordinator` to this method, even if unused,
     // in order to force SwiftUI to re-draw the view if one of them change.
@@ -52,20 +56,51 @@ struct SwitchBoardView: View {
         context.withCGContext { cgContext in
             cgContext.scaleBy(x: switchboard.context.scale, y: switchboard.context.scale)
             switchboard.renderer.draw(context: cgContext)
+            DispatchQueue.main.async {
+                hints = switchboard.renderer.feedbackHints(layout: layout, context: cgContext)
+            }
         }
     }
 
     var body: some View {
-        Canvas { context, size in
-            if switchboard.state.editing {
-                context.stroke(
-                    Path(CGRect(origin: .zero, size: size)),
-                    with: .color(.gray),
-                    style: .init(dash: [5, 10])
-                )
+        ZStack {
+            Canvas { context, size in
+                if switchboard.state.editing {
+                    context.stroke(
+                        Path(CGRect(origin: .zero, size: size)),
+                        with: .color(.gray),
+                        style: .init(dash: [5, 10])
+                    )
+                }
+                
+                draw(context: context, darkMode: colorScheme == .dark, coordinator: layoutController, layout: layout, state: switchboard.state, scale: scale(containerSize: containerSize))
             }
-
-            draw(context: context, darkMode: colorScheme == .dark, coordinator: layoutController, layout: layout, state: switchboard.state, scale: scale(containerSize: containerSize))
+            Rectangle()
+                .fill(.clear)
+                .contentShape(Rectangle())
+                .onContinuousHover { phase in
+                    switch phase {
+                    case .active(let location):
+                        for key in hints.keys {
+                            let h = hints[key]!.height,
+                                w = hints[key]!.width,
+                                x = hints[key]!.minX,
+                                y = hints[key]!.minY,
+                                xpos = location.x-x,
+                                ypos = location.y-y
+                            if xpos >= 0 && xpos <= w && ypos >= 0 && ypos <= h {
+                                fbhint = key
+                                fbpos = CGPoint(x: x, y: y + 3*h/2)
+                            }
+                        }
+                    case .ended:
+                        fbhint = ""
+                    }
+                }
+            Text(fbhint).position(x:fbpos.x,y:fbpos.y)
+                .hidden(fbhint == "")
+                .frame(alignment:.trailing)
+            
         }
         .if(gestureEnabled) {
             $0.gesture(
