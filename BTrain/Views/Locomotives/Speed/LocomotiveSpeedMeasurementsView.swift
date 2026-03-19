@@ -33,13 +33,13 @@ struct LocomotiveSpeedMeasurementsView: View {
 
     var validationError: String? {
         if selectedSpeedEntries.isEmpty {
-            return "􀇿 One or more steps must be selected"
+            return "‼︎ One or more steps must be selected"
         } else if feedbackA == nil {
-            return "􀇿 Select feedback A"
+            return "‼︎ Select feedback A"
         } else if feedbackB == nil {
-            return "􀇿 Select feedback B"
+            return "‼︎ Select feedback B"
         } else if feedbackC == nil {
-            return "􀇿 Select feedback C"
+            return "‼︎ Select feedback C"
         } else {
             return nil
         }
@@ -157,9 +157,9 @@ struct TrainSpeedMeasureDistanceView: View {
         VStack {
             Text("Distance")
             HStack {
-                Text("􀅁")
+                Text("≫")
                 TextField("Distance:", value: $distance, format: .number)
-                Text("cm 􀅂")
+                Text("cm ≪")
             }
         }
     }
