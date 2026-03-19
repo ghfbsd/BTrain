@@ -270,7 +270,7 @@ struct LayoutSpeed {
     static func durationToChange(speed: LocomotiveSpeed, fromSpeed: SpeedKph, toSpeed: SpeedKph) -> TimeInterval {
         let fromSteps = speed.steps(for: fromSpeed).value
         let toSteps = speed.steps(for: toSpeed).value
-        let steps = fromSteps - toSteps
+        let steps = speed.accelerationProfile == .none ? min(1,fromSteps - toSteps) : fromSteps - toSteps
 
         guard steps != 0 else {
             return 0
